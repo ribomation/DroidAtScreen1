@@ -105,7 +105,7 @@ public class AdbExePathCommand extends Command {
         return "adb-executable-path";
     }
 
-    protected void setPreferenceValue(String value) {
+    public void setPreferenceValue(String value) {
         getApplication().getPreferences().put(getPreferencesKey(), value);
         getApplication().savePreferences();
     }
