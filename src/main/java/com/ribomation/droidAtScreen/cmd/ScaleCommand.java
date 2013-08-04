@@ -12,13 +12,10 @@
 
 package com.ribomation.droidAtScreen.cmd;
 
+import javax.swing.JDialog;
+
 import com.ribomation.droidAtScreen.Application;
 import com.ribomation.droidAtScreen.gui.DeviceFrame;
-
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 /**
  * Set the device frame projection scale, as a percentage.
@@ -39,12 +36,12 @@ public class ScaleCommand extends CommandWithTarget<DeviceFrame> {
                 new PreferredScaleCommand.OnScaleUpdatedListener() {
                     @Override
                     public void onScaleUpdated(int value) {
-                        updateButton(deviceFrame);
                         deviceFrame.setScale(value);
                         deviceFrame.pack();
                         deviceFrame.invalidate();
                         deviceFrame.validate();
                         deviceFrame.repaint();
+                        updateButton(deviceFrame);
                     }
                 });
         dlg.setLocationRelativeTo(deviceFrame);
