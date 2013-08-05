@@ -39,7 +39,7 @@ public class OrientationCommand extends CommandWithTarget<DeviceFrame> {
     }
 
     protected void updateButton(DeviceFrame deviceFrame) {
-        String orientation = deviceFrame.isLandscapeMode() ? "Landscape" : "Portrait ";
+        String orientation = deviceFrame.isLandscapeMode() ? "Landscape" : "Portrait";
         setTooltip(String.format("Flip the orientation (%s)", orientation));
         setIcon("orientation-" + orientation.toLowerCase().trim());
     }
