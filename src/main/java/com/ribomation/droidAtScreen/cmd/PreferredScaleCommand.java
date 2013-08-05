@@ -12,13 +12,18 @@
 
 package com.ribomation.droidAtScreen.cmd;
 
-import com.ribomation.droidAtScreen.Application;
-import com.ribomation.droidAtScreen.Settings;
+import java.awt.Dimension;
+import java.util.Hashtable;
 
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JSlider;
+import javax.swing.WindowConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import java.util.Hashtable;
+
+import com.ribomation.droidAtScreen.Application;
 
 /**
  * DESCRIPTION
@@ -78,6 +83,7 @@ public class PreferredScaleCommand extends Command {
         final JDialog dlg = new JDialog(app.getAppFrame(), true);
         dlg.add(scaleSlider);
         dlg.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        dlg.setMinimumSize(new Dimension(100, 200));
         dlg.setSize(scaleSlider.getSize().width, labels.size() * lblHt + 2 * vMarg);
 
         scaleSlider.addChangeListener(new ChangeListener() {
