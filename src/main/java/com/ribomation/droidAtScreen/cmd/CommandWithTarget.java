@@ -12,57 +12,72 @@
 
 package com.ribomation.droidAtScreen.cmd;
 
-import com.ribomation.droidAtScreen.Application;
-
-import javax.swing.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
+import javax.swing.AbstractButton;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+
+import com.ribomation.droidAtScreen.Application;
+
 /**
- * A command that is associated with a target object, which is the subject for the execution of the command.
+ * A command that is associated with a target object, which is the subject for
+ * the execution of the command.
  * <p/>
- * User: Jens
- * Created: 2012-03-22, 22:13
+ * User: Jens Created: 2012-03-22, 22:13
  */
 public abstract class CommandWithTarget<TargetType> extends Command {
-    private TargetType      target;
-    
-    protected CommandWithTarget(TargetType target) {
-        this.target = target;
-    }
+	private TargetType target;
 
-    public TargetType getTarget() {
-        return target;
-    }
+	protected CommandWithTarget(TargetType target) {
+		this.target = target;
+	}
 
-    @Override
-    public AbstractButton newButton() {
-        final JButton b = new JButton(this);
-        b.setBorder(BorderFactory.createEmptyBorder(2,2,2,2));
-        b.setRolloverEnabled(true);
-        b.setContentAreaFilled(false);
-        b.setFocusPainted(false);
-        b.addMouseListener(new MouseListener() {
-            public void mouseClicked(MouseEvent e) { }
-            public void mousePressed(MouseEvent e) { } 
-            public void mouseReleased(MouseEvent e) { } 
-            public void mouseEntered(MouseEvent e) {
-                b.setBorder(BorderFactory.createEtchedBorder());
-            }
-            public void mouseExited(MouseEvent e) {
-                b.setBorder(BorderFactory.createEmptyBorder(2,2,2,2));
-            }
-        });
-        return b;
-    }
+	public TargetType getTarget() {
+		return target;
+	}
 
-    protected abstract void updateButton(TargetType target);
+	@Override
+	public AbstractButton newButton() {
+		final JButton b = new JButton(this);
+		b.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
+		b.setRolloverEnabled(true);
+		b.setContentAreaFilled(false);
+		b.setFocusPainted(false);
+		b.addMouseListener(new MouseListener() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+			}
 
-    protected abstract void doExecute(Application app, TargetType target);
+			@Override
+			public void mousePressed(MouseEvent e) {
+			}
 
-    @Override
-    final protected void doExecute(Application app) {
-        doExecute(app, getTarget());
-    }
-    
+			@Override
+			public void mouseReleased(MouseEvent e) {
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				b.setBorder(BorderFactory.createEtchedBorder());
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				b.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
+			}
+		});
+		return b;
+	}
+
+	protected abstract void updateButton(TargetType target);
+
+	protected abstract void doExecute(Application app, TargetType target);
+
+	@Override
+	final protected void doExecute(Application app) {
+		doExecute(app, getTarget());
+	}
+
 }

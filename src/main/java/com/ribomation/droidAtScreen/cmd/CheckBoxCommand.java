@@ -12,52 +12,54 @@
 
 package com.ribomation.droidAtScreen.cmd;
 
-import com.ribomation.droidAtScreen.Application;
+import javax.swing.AbstractButton;
+import javax.swing.Action;
+import javax.swing.JCheckBox;
+import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JMenuItem;
 
-import javax.swing.*;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
+import com.ribomation.droidAtScreen.Application;
 
 /**
  * Abstract command for boolean commands.
- *
+ * 
  * @user jens
  * @date 2010-jan-19 10:36:37
  */
 public abstract class CheckBoxCommand extends Command {
-    @Override
-    public JMenuItem newMenuItem() {
-        setSelected(getPreferenceValue());
-        JCheckBoxMenuItem b = new JCheckBoxMenuItem();
-        b.setSelected(getPreferenceValue());
-        return b;
-    }
+	@Override
+	public JMenuItem newMenuItem() {
+		setSelected(getPreferenceValue());
+		JCheckBoxMenuItem b = new JCheckBoxMenuItem();
+		b.setSelected(getPreferenceValue());
+		return b;
+	}
 
-    @Override
-    public AbstractButton newButton() {
-        setSelected(getPreferenceValue());
-        AbstractButton b = new JCheckBox();
-        b.setSelected(getPreferenceValue());
-        return b;
-    }
+	@Override
+	public AbstractButton newButton() {
+		setSelected(getPreferenceValue());
+		AbstractButton b = new JCheckBox();
+		b.setSelected(getPreferenceValue());
+		return b;
+	}
 
-    public void setSelected(boolean selected) {
-        putValue(Action.SELECTED_KEY, selected);
-    }
+	public void setSelected(boolean selected) {
+		putValue(Action.SELECTED_KEY, selected);
+	}
 
-    public boolean isSelected() {
-        return (Boolean) getValue(Action.SELECTED_KEY);
-    }
+	public boolean isSelected() {
+		return (Boolean) getValue(Action.SELECTED_KEY);
+	}
 
-    @Override
-    protected final void doExecute(Application app) {
-        boolean selected = !getPreferenceValue();
-        setSelected(selected);
-        setPreferenceValue(selected);
-    }
+	@Override
+	protected final void doExecute(Application app) {
+		boolean selected = !getPreferenceValue();
+		setSelected(selected);
+		setPreferenceValue(selected);
+	}
 
-    protected abstract boolean getPreferenceValue();
+	protected abstract boolean getPreferenceValue();
 
-    protected abstract void setPreferenceValue(boolean value);
+	protected abstract void setPreferenceValue(boolean value);
 
 }

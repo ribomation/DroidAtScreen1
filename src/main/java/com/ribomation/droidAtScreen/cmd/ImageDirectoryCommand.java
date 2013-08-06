@@ -12,48 +12,50 @@
 
 package com.ribomation.droidAtScreen.cmd;
 
-import com.ribomation.droidAtScreen.Application;
-
-import javax.swing.*;
 import java.io.File;
+
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+
+import com.ribomation.droidAtScreen.Application;
 
 /**
  * Sets the default image dir, when saving screen-shots.
- *
+ * 
  * @user jens
  * @date 2012-01-03 09:20
  */
 public class ImageDirectoryCommand extends Command {
 
-    public ImageDirectoryCommand() {
-        setLabel("Image Dir");
-        setIcon("imgfolder");
-        setMnemonic('D');
-        updateView(getApplication().getSettings().getImageDirectory());
-    }
-    
-    protected void updateView(File imageDirectory) {
-        setTooltip(String.format("Directory when saving screen-shots (%s)", imageDirectory.getName()));
-    }
+	public ImageDirectoryCommand() {
+		setLabel("Image Dir");
+		setIcon("imgfolder");
+		setMnemonic('D');
+		updateView(getApplication().getSettings().getImageDirectory());
+	}
 
-    @Override
-    protected void doExecute(Application app) {
-        File imageDirectory = app.getSettings().getImageDirectory();
+	protected void updateView(File imageDirectory) {
+		setTooltip(String.format("Directory when saving screen-shots (%s)", imageDirectory.getName()));
+	}
 
-        final JFileChooser chooser = new JFileChooser(imageDirectory);
-        chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-        int rc = chooser.showSaveDialog(app.getAppFrame());
-        if (rc != JFileChooser.APPROVE_OPTION) return;
+	@Override
+	protected void doExecute(Application app) {
+		File imageDirectory = app.getSettings().getImageDirectory();
 
-        imageDirectory = chooser.getSelectedFile();
-        if (!(imageDirectory.isAbsolute() && imageDirectory.canWrite())) {
-            JOptionPane.showMessageDialog(app.getAppFrame(),
-                    "Not a writable directory '" + imageDirectory + "'", "Invalid directory", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        
-        app.getSettings().setImageDirectory(imageDirectory);
-        updateView(imageDirectory);
-    }
+		final JFileChooser chooser = new JFileChooser(imageDirectory);
+		chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+		int rc = chooser.showSaveDialog(app.getAppFrame());
+		if (rc != JFileChooser.APPROVE_OPTION)
+			return;
+
+		imageDirectory = chooser.getSelectedFile();
+		if (!(imageDirectory.isAbsolute() && imageDirectory.canWrite())) {
+			JOptionPane.showMessageDialog(app.getAppFrame(), "Not a writable directory '" + imageDirectory + "'", "Invalid directory", JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+
+		app.getSettings().setImageDirectory(imageDirectory);
+		updateView(imageDirectory);
+	}
 
 }

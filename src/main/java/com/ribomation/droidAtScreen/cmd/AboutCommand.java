@@ -12,52 +12,45 @@
 
 package com.ribomation.droidAtScreen.cmd;
 
+import java.awt.BorderLayout;
+
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+
 import com.ribomation.droidAtScreen.Application;
 import com.ribomation.droidAtScreen.Info;
 import com.ribomation.droidAtScreen.gui.GuiUtil;
 
-import javax.swing.*;
-import java.awt.*;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-
 /**
  * Shows some info about this app.
- *
+ * 
  * @user jens
  * @date 2010-jan-18 10:35:20
  */
 public class AboutCommand extends Command {
-    public AboutCommand() {
-        setLabel("About...");
-        setTooltip("Shows info about this application");
-        setIcon("about");
-        setMnemonic('A');
-    }
+	public AboutCommand() {
+		setLabel("About...");
+		setTooltip("Shows info about this application");
+		setIcon("about");
+		setMnemonic('A');
+	}
 
-    @Override
-    protected void doExecute(Application app) {
-        ImageIcon   image = GuiUtil.loadPicture("jens-riboe");
-        Info info = app.getInfo();
-        String      aboutText = loadResource("/about.html");
-        String      linkText = loadResource("/about-links.html");
-        String      systemText = String.format(loadResource("/about-system.html"),
-                System.getProperty("os.name"),
-                System.getProperty("os.arch"),
-                System.getProperty("java.vm.name"),
-                System.getProperty("java.runtime.version"));
+	@Override
+	protected void doExecute(Application app) {
+		ImageIcon image = GuiUtil.loadPicture("jens-riboe");
+		Info info = app.getInfo();
+		String aboutText = loadResource("/about.html");
+		String linkText = loadResource("/about-links.html");
+		String systemText = String.format(loadResource("/about-system.html"), System.getProperty("os.name"), System.getProperty("os.arch"), System.getProperty("java.vm.name"), System.getProperty("java.runtime.version"));
 
-        JPanel content = new JPanel(new BorderLayout(5, 0));
-        content.add(new JLabel(image), BorderLayout.WEST);
-        content.add(new JLabel("<html>" + aboutText), BorderLayout.CENTER);
-        content.add(new JLabel("<html>"+linkText+systemText), BorderLayout.SOUTH);
+		JPanel content = new JPanel(new BorderLayout(5, 0));
+		content.add(new JLabel(image), BorderLayout.WEST);
+		content.add(new JLabel("<html>" + aboutText), BorderLayout.CENTER);
+		content.add(new JLabel("<html>" + linkText + systemText), BorderLayout.SOUTH);
 
-        JOptionPane.showMessageDialog(null,
-                content,
-                info.getName() + " - Version " + info.getVersion(),
-                JOptionPane.PLAIN_MESSAGE);
-    }
+		JOptionPane.showMessageDialog(null, content, info.getName() + " - Version " + info.getVersion(), JOptionPane.PLAIN_MESSAGE);
+	}
 
 }

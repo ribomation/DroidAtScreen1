@@ -12,43 +12,49 @@
 
 package com.ribomation.droidAtScreen.gui;
 
-import com.ribomation.droidAtScreen.Application;
+import java.awt.Color;
+import java.awt.FlowLayout;
+import java.awt.Font;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.BorderFactory;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+
+import com.ribomation.droidAtScreen.Application;
 
 /**
  * Place for status messages.
- *
+ * 
  * @user jens
  * @date 2011-10-02 11:17
  */
 public class StatusBar extends JPanel {
-    private JLabel      message;
+	private JLabel message;
 
-    public StatusBar(Application app) {
-        setLayout(new FlowLayout(FlowLayout.LEFT));
-        setBorder(BorderFactory.createLoweredBevelBorder());
+	public StatusBar(Application app) {
+		setLayout(new FlowLayout(FlowLayout.LEFT));
+		setBorder(BorderFactory.createLoweredBevelBorder());
 
-        message = new JLabel("", JLabel.LEFT);
-        Font font = message.getFont();
-        message.setFont(font.deriveFont(Font.PLAIN, (float) (font.getSize() * 0.90)));
-        message.setForeground(Color.DARK_GRAY);
-        add(message);
-        
-        message(app.getInfo().getName() + ", V" + app.getInfo().getVersion());
-    }
+		message = new JLabel("", SwingConstants.LEFT);
+		Font font = message.getFont();
+		message.setFont(font.deriveFont(Font.PLAIN, (float) (font.getSize() * 0.90)));
+		message.setForeground(Color.DARK_GRAY);
+		add(message);
 
-    public void message(String txt) {
-        message.setText(txt);
-    }
+		message(app.getInfo().getName() + ", V" + app.getInfo().getVersion());
+	}
 
-    public void message(String fmt, Object... args) {
-        message(String.format(fmt, args));
-    }
+	public void message(String txt) {
+		message.setText(txt);
+	}
 
-    public void clear() {
-        message("");
-    }
+	public void message(String fmt, Object... args) {
+		message(String.format(fmt, args));
+	}
+
+	public void clear() {
+		message("");
+	}
 
 }

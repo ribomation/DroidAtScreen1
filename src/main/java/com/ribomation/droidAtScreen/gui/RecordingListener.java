@@ -16,10 +16,10 @@ import com.ribomation.droidAtScreen.dev.ScreenImage;
 
 /**
  * DESCRIPTION
- *
+ * 
  * @user jens
  * @date 2011-10-04 15:16
  */
 public interface RecordingListener {
-    void record(ScreenImage image);
+	void record(ScreenImage image);
 }

@@ -12,11 +12,11 @@
 
 package com.ribomation.droidAtScreen.cmd;
 
-import com.ribomation.droidAtScreen.Application;
-
-import java.awt.*;
+import java.awt.Desktop;
 import java.net.URI;
 import java.net.URISyntaxException;
+
+import com.ribomation.droidAtScreen.Application;
 
 /**
  * Shows the help text.
@@ -26,21 +26,21 @@ import java.net.URISyntaxException;
  */
 public class HelpCommand extends CommandWithURI {
 
-    public HelpCommand() {
-        setLabel("Help");
-        setTooltip("Views the help text for Droid@Screen");
-        setIcon("help");
-        setMnemonic('H');
-    }
+	public HelpCommand() {
+		setLabel("Help");
+		setTooltip("Views the help text for Droid@Screen");
+		setIcon("help");
+		setMnemonic('H');
+	}
 
-    @Override
-    protected Desktop.Action getType() {
-        return Desktop.Action.BROWSE;
-    }
+	@Override
+	protected Desktop.Action getType() {
+		return Desktop.Action.BROWSE;
+	}
 
-    @Override
-    protected URI getURI(Application app) throws URISyntaxException {
-        return new URI(app.getInfo().getHelpUri());
-    }
+	@Override
+	protected URI getURI(Application app) throws URISyntaxException {
+		return new URI(app.getInfo().getHelpUri());
+	}
 
 }

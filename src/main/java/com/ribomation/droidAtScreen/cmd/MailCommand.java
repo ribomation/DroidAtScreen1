@@ -12,11 +12,11 @@
 
 package com.ribomation.droidAtScreen.cmd;
 
-import com.ribomation.droidAtScreen.Application;
-
-import java.awt.*;
+import java.awt.Desktop;
 import java.net.URI;
 import java.net.URISyntaxException;
+
+import com.ribomation.droidAtScreen.Application;
 
 /**
  * Shows the help text.
@@ -26,21 +26,21 @@ import java.net.URISyntaxException;
  */
 public class MailCommand extends CommandWithURI {
 
-    public MailCommand() {
-        setLabel("Mail");
-        setTooltip("Send a feedback mail to the developer");
-        setIcon("mail");
-        setMnemonic('M');
-    }
+	public MailCommand() {
+		setLabel("Mail");
+		setTooltip("Send a feedback mail to the developer");
+		setIcon("mail");
+		setMnemonic('M');
+	}
 
-    @Override
-    protected Desktop.Action getType() {
-        return Desktop.Action.MAIL;
-    }
+	@Override
+	protected Desktop.Action getType() {
+		return Desktop.Action.MAIL;
+	}
 
-    @Override
-    protected URI getURI(Application app) throws URISyntaxException {
-        return new URI(app.getInfo().getMailUri());
-    }
+	@Override
+	protected URI getURI(Application app) throws URISyntaxException {
+		return new URI(app.getInfo().getMailUri());
+	}
 
 }

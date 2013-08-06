@@ -16,28 +16,29 @@ import com.ribomation.droidAtScreen.gui.DeviceFrame;
 
 /**
  * If emulators should popup or not.
- *
+ * 
  * @user jens
  * @date 2010-jan-18 10:35:20
  */
 public class HideEmulatorsCommand extends CheckBoxCommand {
 
-    public HideEmulatorsCommand() {
-        setLabel("Hide Emulators");
-        setTooltip("Do not show emulators automatically");
-    }
+	public HideEmulatorsCommand() {
+		setLabel("Hide Emulators");
+		setTooltip("Do not show emulators automatically");
+	}
 
-    @Override
-    protected boolean getPreferenceValue() {
-        return getApplication().getSettings().isHideEmulators();
-    }
+	@Override
+	protected boolean getPreferenceValue() {
+		return getApplication().getSettings().isHideEmulators();
+	}
 
-    @Override
-    protected void setPreferenceValue(boolean hide) {
-        getApplication().getSettings().setHideEmulators(hide);
-        for (DeviceFrame frame : getApplication().getDeviceTableModel().getDevices()) {
-            if (frame.getDevice().isEmulator()) frame.setVisible(!hide);
-        }
-        getApplication().getDeviceTableModel().refresh();
-    }
+	@Override
+	protected void setPreferenceValue(boolean hide) {
+		getApplication().getSettings().setHideEmulators(hide);
+		for (DeviceFrame frame : getApplication().getDeviceTableModel().getDevices()) {
+			if (frame.getDevice().isEmulator())
+				frame.setVisible(!hide);
+		}
+		getApplication().getDeviceTableModel().refresh();
+	}
 }

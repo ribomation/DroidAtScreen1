@@ -12,35 +12,35 @@
 
 package com.ribomation.droidAtScreen.cmd;
 
-import com.ribomation.droidAtScreen.Application;
+import javax.swing.SwingUtilities;
 
-import javax.swing.*;
+import com.ribomation.droidAtScreen.Application;
 
 /**
  * Reloads the devices from ADB.
- *
+ * 
  * @user jens
  * @date 2011-10-04 13:00
  */
 public class AdbReloadDevicesCommand extends Command {
 
-    public AdbReloadDevicesCommand() {
-        setLabel("Reload Devices");
-        setIcon("diagram");
-        setMnemonic('L');
-        setTooltip("Reloads all devices from ADB.");
-    }
+	public AdbReloadDevicesCommand() {
+		setLabel("Reload Devices");
+		setIcon("diagram");
+		setMnemonic('L');
+		setTooltip("Reloads all devices from ADB.");
+	}
 
-    @Override
-    protected void doExecute(final Application app) {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                app.disconnectAll();
-                app.getDeviceManager().reloadDevices();
-                app.getAppFrame().getStatusBar().message("Android devices reloaded");
-            }
-        });
-    }
+	@Override
+	protected void doExecute(final Application app) {
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				app.disconnectAll();
+				app.getDeviceManager().reloadDevices();
+				app.getAppFrame().getStatusBar().message("Android devices reloaded");
+			}
+		});
+	}
 
 }

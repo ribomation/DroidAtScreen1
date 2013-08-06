@@ -18,30 +18,30 @@ import com.ribomation.droidAtScreen.gui.DeviceFrame;
 /**
  * Flips the device-frame 90 degrees.
  * <p/>
- * User: Jens
- * Created: 2012-03-22, 22:18
+ * User: Jens Created: 2012-03-22, 22:18
  */
 public class OrientationCommand extends CommandWithTarget<DeviceFrame> {
 
-    public OrientationCommand(DeviceFrame deviceFrame) {
-        super(deviceFrame);
-        updateButton(deviceFrame);
-    }
+	public OrientationCommand(DeviceFrame deviceFrame) {
+		super(deviceFrame);
+		updateButton(deviceFrame);
+	}
 
-    @Override
-    protected void doExecute(Application app, DeviceFrame deviceFrame) {
-        deviceFrame.setLandscapeMode(!deviceFrame.isLandscapeMode());
-        updateButton(deviceFrame);
-        deviceFrame.pack();
-        deviceFrame.invalidate();
-        deviceFrame.validate();
-        deviceFrame.repaint();
-    }
+	@Override
+	protected void doExecute(Application app, DeviceFrame deviceFrame) {
+		deviceFrame.setLandscapeMode(!deviceFrame.isLandscapeMode());
+		updateButton(deviceFrame);
+		deviceFrame.pack();
+		deviceFrame.invalidate();
+		deviceFrame.validate();
+		deviceFrame.repaint();
+	}
 
-    protected void updateButton(DeviceFrame deviceFrame) {
-        String orientation = deviceFrame.isLandscapeMode() ? "Landscape" : "Portrait ";
-        setTooltip(String.format("Flip the orientation (%s)", orientation));
-        setIcon("orientation-" + orientation.toLowerCase().trim());
-    }
-    
+	@Override
+	protected void updateButton(DeviceFrame deviceFrame) {
+		String orientation = deviceFrame.isLandscapeMode() ? "Landscape" : "Portrait ";
+		setTooltip(String.format("Flip the orientation (%s)", orientation));
+		setIcon("orientation-" + orientation.toLowerCase().trim());
+	}
+
 }
