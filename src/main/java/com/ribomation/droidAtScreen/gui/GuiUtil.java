@@ -25,7 +25,7 @@ import com.ribomation.droidAtScreen.cmd.Command;
 
 /**
  * Util class with a collection of GUI helper methods.
- * 
+ *
  * @user jens
  * @date 2011-10-01 12:30
  */
@@ -78,8 +78,17 @@ public class GuiUtil {
 		return loadImage(name, "jpg");
 	}
 
+	public static ImageIcon loadSkin(String skinName) {
+		String path = "/skins/" + skinName + "/frame.png";
+		return loadImageFromPath(path);
+	}
+
 	public static ImageIcon loadImage(String name, String ext) {
 		String path = "/img/" + name + "." + ext.toLowerCase();
+		return loadImageFromPath(path);
+	}
+
+	private static ImageIcon loadImageFromPath(String path) {
 		URL url = GuiUtil.class.getResource(path);
 		if (url != null) {
 			return new ImageIcon(url);

@@ -20,6 +20,7 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.Toolkit;
@@ -42,6 +43,7 @@ import org.apache.log4j.Logger;
 
 import com.ribomation.droidAtScreen.Application;
 import com.ribomation.droidAtScreen.Settings;
+import com.ribomation.droidAtScreen.Skin;
 import com.ribomation.droidAtScreen.cmd.OrientationCommand;
 import com.ribomation.droidAtScreen.cmd.PropertiesCommand;
 import com.ribomation.droidAtScreen.cmd.RecordingCommand;
@@ -91,6 +93,9 @@ public class DeviceFrame extends JFrame implements Comparable<DeviceFrame> {
 		add(toolBar = createToolBar(), BorderLayout.WEST);
 		add(infoPane = new InfoPane(), BorderLayout.SOUTH);
 
+		toolBar.setVisible(false);
+		infoPane.setVisible(false);
+
 		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 		addWindowListener(new WindowAdapter() {
 			@Override
@@ -104,6 +109,25 @@ public class DeviceFrame extends JFrame implements Comparable<DeviceFrame> {
 
 		startRetriever();
 		pack();
+	}
+
+	private void applySkin() {
+		Skin skin = null;
+		try {
+			skin = SkinUtil.loadSkin(device.getName().toLowerCase());
+		} catch (Exception ignore) {
+		}
+		if (skin != null) {
+			// Apply skin
+			canvas.setSkin(skin);
+			setBackground(new Color(1.0f, 1.0f, 1.0f, 0.0f));
+			pack();
+			boolean wasVisible = isVisible();
+			dispose();
+			setUndecorated(true);
+			setVisible(wasVisible);
+			forceRepaint();
+		}
 	}
 
 	public void startRetriever() {
@@ -123,7 +147,7 @@ public class DeviceFrame extends JFrame implements Comparable<DeviceFrame> {
 			long elapsed = System.currentTimeMillis() - start;
 			infoPane.setElapsed(elapsed, image);
 			infoPane.setStatus(device.getState().name().toUpperCase());
-//			log.debug(String.format("Got screenshot %s, elapsed %d ms", image, elapsed));
+			//			log.debug(String.format("Got screenshot %s, elapsed %d ms", image, elapsed));
 
 			boolean fresh = canvas.getScreenshot() == null;
 			if (image != null) {
@@ -138,6 +162,7 @@ public class DeviceFrame extends JFrame implements Comparable<DeviceFrame> {
 				log = Logger.getLogger(DeviceFrame.class.getName() + ":" + device.getName());
 				setTitle(device.getName());
 				pack();
+				applySkin();
 				centerFrameLocationOnScreen();
 				app.getDeviceTableModel().refresh();
 			}
@@ -247,9 +272,22 @@ public class DeviceFrame extends JFrame implements Comparable<DeviceFrame> {
 
 	class ImageCanvas extends JComponent {
 		private ScreenImage image;
+		private Image skinBackgroundImage = null;
+		private Point skinScreenXYPoint;
 
 		public ImageCanvas() {
 			setBorder(BorderFactory.createLoweredBevelBorder());
+		}
+
+		public void setSkin(Skin skin) {
+			this.skinScreenXYPoint = skin.getScreenXYCoord();
+			BufferedImage bi = new BufferedImage(skin.getFrame().getIconWidth(), skin.getFrame().getIconHeight(), BufferedImage.TYPE_INT_ARGB);
+			Graphics g = bi.createGraphics();
+			// paint the Icon to the BufferedImage.
+			skin.getFrame().paintIcon(null, g, 0, 0);
+			g.dispose();
+			this.skinBackgroundImage = bi;
+			repaint();
 		}
 
 		public void setScreenshot(ScreenImage image) {
@@ -283,6 +321,10 @@ public class DeviceFrame extends JFrame implements Comparable<DeviceFrame> {
 					TX.concatenate(AffineTransform.getQuadrantRotateInstance(2, x, y));
 				}
 
+				if (skinBackgroundImage != null) {
+					g2.drawImage(skinBackgroundImage, TX, null);
+					TX.translate(this.skinScreenXYPoint.x, this.skinScreenXYPoint.y);
+				}
 				g2.drawImage(bufImg, TX, null);
 			} else {
 				g.setColor(Color.RED);
@@ -317,7 +359,13 @@ public class DeviceFrame extends JFrame implements Comparable<DeviceFrame> {
 				return new Dimension(200, 300);
 			}
 			if (landscapeMode) {
+				if (skinBackgroundImage != null) {
+					return new Dimension(scale(skinBackgroundImage.getHeight(null)), scale(skinBackgroundImage.getWidth(null)));
+				}
 				return new Dimension(scale(image.getHeight()), scale(image.getWidth()));
+			}
+			if (skinBackgroundImage != null) {
+				return new Dimension(scale(skinBackgroundImage.getWidth(null)), scale(skinBackgroundImage.getHeight(null)));
 			}
 			return new Dimension(scale(image.getWidth()), scale(image.getHeight()));
 		}
@@ -396,10 +444,37 @@ public class DeviceFrame extends JFrame implements Comparable<DeviceFrame> {
 	}
 
 	private int scale(int value) {
+		double factor = getScaleFactor();
+		if (factor != 1) {
+			scalePercentage = (int) (factor * 100);
+		}
 		if (scalePercentage == 100) {
 			return value;
 		}
 		return (int) Math.round(value * scalePercentage / 100.0);
+	}
+
+	private double getScaleFactor() {
+		final Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
+		final double screenHeight = screen.getHeight();
+		final double screenWidth = screen.getWidth();
+		double factor = 1;
+		if (screenHeight <= getHeight()) {
+			factor = screenHeight / getHeight();
+			if (factor > 0.75) {
+				factor = 0.75;
+			} else if (factor > 0.50) {
+				factor = 0.50;
+			}
+		}
+		return factor;
+	}
+
+	private void forceRepaint() {
+		pack();
+		invalidate();
+		validate();
+		repaint();
 	}
 
 	private void centerFrameLocationOnScreen() {
