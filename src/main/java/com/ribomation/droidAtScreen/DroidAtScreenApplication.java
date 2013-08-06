@@ -39,18 +39,18 @@ import com.ribomation.droidAtScreen.gui.DeviceTableModel;
 
 /**
  * Main entry point of this application
- * 
+ *
  * @user jens
  * @date 2010-jan-17 11:00:39
  */
 public class DroidAtScreenApplication implements Application, AndroidDeviceListener {
-	private Logger log = Logger.getLogger(DroidAtScreenApplication.class);
+	private final Logger log = Logger.getLogger(DroidAtScreenApplication.class);
 	private AndroidDeviceManager deviceManager;
 	private ApplicationFrame appFrame;
-	private List<AndroidDeviceListener> deviceListeners = new ArrayList<AndroidDeviceListener>();
+	private final List<AndroidDeviceListener> deviceListeners = new ArrayList<AndroidDeviceListener>();
 	private Settings settings;
 	private Properties appProperties;
-	private DeviceTableModel deviceTableModel = new DeviceTableModel();
+	private final DeviceTableModel deviceTableModel = new DeviceTableModel();
 	private Timer timer;
 
 	public static void main(String[] args) {
@@ -129,8 +129,9 @@ public class DroidAtScreenApplication implements Application, AndroidDeviceListe
 	private File isExe(String envName) {
 		String env = System.getenv(envName);
 		log.debug("isExe: env=" + env);
-		if (env == null)
+		if (env == null) {
 			return null;
+		}
 
 		String ext = System.getProperty("os.name", "").toLowerCase().startsWith("windows") ? ".exe" : "";
 		File androidHome = new File(env);
@@ -138,8 +139,9 @@ public class DroidAtScreenApplication implements Application, AndroidDeviceListe
 		File file = new File(platformTools, "adb" + ext);
 		log.debug("isExe: file=" + file.getAbsolutePath());
 
-		if (file.isFile() && file.canExecute())
+		if (file.isFile() && file.canExecute()) {
 			return file;
+		}
 		return null;
 	}
 
@@ -233,7 +235,7 @@ public class DroidAtScreenApplication implements Application, AndroidDeviceListe
 				deviceTableModel.add(frame);
 				fireDeviceConnected(dev);
 
-				frame.setLocationRelativeTo(getAppFrame());
+//				frame.setLocationRelativeTo(getAppFrame());
 				frame.setVisible(!getSettings().isHideEmulators() || !dev.isEmulator());
 			}
 		});
@@ -249,8 +251,9 @@ public class DroidAtScreenApplication implements Application, AndroidDeviceListe
 				getAppFrame().getStatusBar().message("Disconnected from " + dev.getName());
 
 				DeviceFrame frame = deviceTableModel.getDevice(dev.getName());
-				if (frame == null)
+				if (frame == null) {
 					return;
+				}
 
 				deviceTableModel.remove(frame);
 				fireDeviceDisconnected(dev);

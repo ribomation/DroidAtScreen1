@@ -22,6 +22,7 @@ import java.awt.Graphics2D;
 import java.awt.GridLayout;
 import java.awt.Point;
 import java.awt.RenderingHints;
+import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.geom.AffineTransform;
@@ -52,7 +53,7 @@ import com.ribomation.droidAtScreen.dev.ScreenImage;
 
 /**
  * Frame holder for the device image.
- * 
+ *
  * @user jens
  * @date 2010-jan-17 22:13:20
  */
@@ -122,12 +123,13 @@ public class DeviceFrame extends JFrame implements Comparable<DeviceFrame> {
 			long elapsed = System.currentTimeMillis() - start;
 			infoPane.setElapsed(elapsed, image);
 			infoPane.setStatus(device.getState().name().toUpperCase());
-			log.debug(String.format("Got screenshot %s, elapsed %d ms", image, elapsed));
+//			log.debug(String.format("Got screenshot %s, elapsed %d ms", image, elapsed));
 
 			boolean fresh = canvas.getScreenshot() == null;
 			if (image != null) {
-				if (recordingListener != null)
+				if (recordingListener != null) {
 					recordingListener.record(image);
+				}
 				canvas.setScreenshot(image);
 				infoPane.setSizeInfo(canvas);
 			}
@@ -136,6 +138,7 @@ public class DeviceFrame extends JFrame implements Comparable<DeviceFrame> {
 				log = Logger.getLogger(DeviceFrame.class.getName() + ":" + device.getName());
 				setTitle(device.getName());
 				pack();
+				centerFrameLocationOnScreen();
 				app.getDeviceTableModel().refresh();
 			}
 		}
@@ -211,22 +214,28 @@ public class DeviceFrame extends JFrame implements Comparable<DeviceFrame> {
 		}
 
 		String unit() {
-			if (value / G > 0)
+			if (value / G > 0) {
 				return "Gb";
-			if (value / M > 0)
+			}
+			if (value / M > 0) {
 				return "Mb";
-			if (value / K > 0)
+			}
+			if (value / K > 0) {
 				return "Kb";
+			}
 			return "bytes";
 		}
 
 		float value() {
-			if (value / G > 0)
+			if (value / G > 0) {
 				return (float) value / G;
-			if (value / M > 0)
+			}
+			if (value / M > 0) {
 				return (float) value / M;
-			if (value / K > 0)
+			}
+			if (value / K > 0) {
 				return (float) value / K;
+			}
 			return value;
 		}
 
@@ -304,8 +313,9 @@ public class DeviceFrame extends JFrame implements Comparable<DeviceFrame> {
 
 		@Override
 		public Dimension getPreferredSize() {
-			if (image == null)
+			if (image == null) {
 				return new Dimension(200, 300);
+			}
 			if (landscapeMode) {
 				return new Dimension(scale(image.getHeight()), scale(image.getWidth()));
 			}
@@ -386,17 +396,27 @@ public class DeviceFrame extends JFrame implements Comparable<DeviceFrame> {
 	}
 
 	private int scale(int value) {
-		if (scalePercentage == 100)
+		if (scalePercentage == 100) {
 			return value;
+		}
 		return (int) Math.round(value * scalePercentage / 100.0);
+	}
+
+	private void centerFrameLocationOnScreen() {
+		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
+		int x = (int) ((screen.getWidth() - getWidth()) / 2);
+		int y = (int) ((screen.getHeight() - getHeight()) / 2);
+		setLocation(x, y);
 	}
 
 	@Override
 	public boolean equals(Object o) {
-		if (this == o)
+		if (this == o) {
 			return true;
-		if (o == null || getClass() != o.getClass())
+		}
+		if (o == null || getClass() != o.getClass()) {
 			return false;
+		}
 
 		DeviceFrame that = (DeviceFrame) o;
 		return this.device.getName().equals(that.device.getName());
