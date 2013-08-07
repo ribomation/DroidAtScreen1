@@ -149,14 +149,15 @@ public class DeviceFrame extends JFrame implements Comparable<DeviceFrame> {
 			infoPane.setStatus(device.getState().name().toUpperCase());
 			//			log.debug(String.format("Got screenshot %s, elapsed %d ms", image, elapsed));
 
-			boolean fresh = canvas.getScreenshot() == null;
-			if (image != null) {
-				if (recordingListener != null) {
-					recordingListener.record(image);
-				}
-				canvas.setScreenshot(image);
-				infoPane.setSizeInfo(canvas);
+			if (image == null) {
+				return;
 			}
+			boolean fresh = canvas.getScreenshot() == null;
+			if (recordingListener != null) {
+				recordingListener.record(image);
+			}
+			canvas.setScreenshot(image);
+			infoPane.setSizeInfo(canvas);
 
 			if (fresh) {
 				log = Logger.getLogger(DeviceFrame.class.getName() + ":" + device.getName());
