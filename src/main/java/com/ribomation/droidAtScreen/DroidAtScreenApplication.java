@@ -12,6 +12,8 @@
 
 package com.ribomation.droidAtScreen;
 
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -145,6 +147,31 @@ public class DroidAtScreenApplication implements Application, AndroidDeviceListe
 		return null;
 	}
 
+	@Override
+	public void updateDeviceFramePositionsOnScreen() {
+		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
+		synchronized (deviceTableModel) {
+			List<DeviceFrame> devices = deviceTableModel.getDevices();
+			int count = devices.size();
+			if (count > 0) {
+				// divide the screen for each frame
+				int width = (int) (screen.getWidth() / count);
+				int offset = 0;
+				for (DeviceFrame frame : devices) {
+					// center each frame within their screen region
+					centerFrameLocationOnScreenRegion(frame, width, (int) screen.getHeight(), offset);
+					offset++;
+				}
+			}
+		}
+	}
+
+	private void centerFrameLocationOnScreenRegion(DeviceFrame frame, int screenWidth, int screenHeight, int offset) {
+		int x = (screenWidth - frame.getWidth()) / 2;
+		int y = (screenHeight - frame.getHeight()) / 2;
+		frame.setLocation(x + screenWidth * offset, y);
+	}
+
 	// --------------------------------------------
 	// App getters
 	// --------------------------------------------
@@ -235,8 +262,9 @@ public class DroidAtScreenApplication implements Application, AndroidDeviceListe
 				deviceTableModel.add(frame);
 				fireDeviceConnected(dev);
 
-//				frame.setLocationRelativeTo(getAppFrame());
 				frame.setVisible(!getSettings().isHideEmulators() || !dev.isEmulator());
+
+				updateDeviceFramePositionsOnScreen();
 			}
 		});
 	}
@@ -260,6 +288,8 @@ public class DroidAtScreenApplication implements Application, AndroidDeviceListe
 				frame.stopRetriever();
 				frame.setVisible(false);
 				frame.dispose();
+
+				updateDeviceFramePositionsOnScreen();
 			}
 		});
 	}

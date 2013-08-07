@@ -24,7 +24,7 @@ import com.ribomation.droidAtScreen.gui.DeviceTableModel;
 /**
  * Application interface that provides a set of services for disparate parts of
  * the app.
- * 
+ *
  * @user jens
  * @date 2010-jan-18 10:06:42
  */
@@ -40,11 +40,16 @@ public interface Application {
 
 	void addAndroidDeviceListener(AndroidDeviceListener listener);
 
+	/**
+	 * Updates the position of the frames on the screen
+	 */
+	void updateDeviceFramePositionsOnScreen();
+
 	List<DeviceFrame> getDevices();
 
 	/**
 	 * Invoked when a new device is detected.
-	 * 
+	 *
 	 * @param dev
 	 *            the new device
 	 */
@@ -52,7 +57,7 @@ public interface Application {
 
 	/**
 	 * Invoked when a device goes offline.
-	 * 
+	 *
 	 * @param dev
 	 *            the defunct device
 	 */

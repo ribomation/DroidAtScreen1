@@ -164,8 +164,8 @@ public class DeviceFrame extends JFrame implements Comparable<DeviceFrame> {
 				setTitle(device.getName());
 				pack();
 				applySkin();
-				centerFrameLocationOnScreen();
 				app.getDeviceTableModel().refresh();
+				app.updateDeviceFramePositionsOnScreen();
 			}
 		}
 	}
@@ -481,13 +481,6 @@ public class DeviceFrame extends JFrame implements Comparable<DeviceFrame> {
 		invalidate();
 		validate();
 		repaint();
-	}
-
-	private void centerFrameLocationOnScreen() {
-		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
-		int x = (int) ((screen.getWidth() - getWidth()) / 2);
-		int y = (int) ((screen.getHeight() - getHeight()) / 2);
-		setLocation(x, y);
 	}
 
 	@Override
