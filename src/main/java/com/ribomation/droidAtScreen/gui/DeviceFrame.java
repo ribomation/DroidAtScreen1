@@ -89,10 +89,15 @@ public class DeviceFrame extends JFrame implements Comparable<DeviceFrame> {
 		setTitle(device.getName());
 		setIconImage(GuiUtil.loadIcon("device").getImage());
 		setResizable(false);
+
+		JComponent c = (JComponent) getContentPane();
+		c.setBorder(BorderFactory.createEmptyBorder());
+
 		add(canvas = new ImageCanvas(), BorderLayout.CENTER);
 		add(toolBar = createToolBar(), BorderLayout.WEST);
 		add(infoPane = new InfoPane(), BorderLayout.SOUTH);
 
+		canvas.setBorder(BorderFactory.createEmptyBorder());
 		toolBar.setVisible(false);
 		infoPane.setVisible(false);
 
