@@ -26,6 +26,9 @@ import java.awt.RenderingHints;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.geom.AffineTransform;
@@ -78,6 +81,8 @@ public class DeviceFrame extends JFrame implements Comparable<DeviceFrame> {
 	private RecordingListener recordingListener;
 	private TimerTask retriever;
 	private InfoPane infoPane;
+
+	private Point mouseDownCompCoords = null;
 
 	private final class AnimationActionListener implements ActionListener {
 
@@ -166,6 +171,35 @@ public class DeviceFrame extends JFrame implements Comparable<DeviceFrame> {
 				stopRetriever();
 				DeviceFrame.this.setVisible(false);
 				DeviceFrame.this.app.getDeviceTableModel().refresh();
+			}
+		});
+
+		addMouseListener(new MouseListener() {
+			public void mouseReleased(MouseEvent e) {
+				mouseDownCompCoords = null;
+			}
+
+			public void mousePressed(MouseEvent e) {
+				mouseDownCompCoords = e.getPoint();
+			}
+
+			public void mouseExited(MouseEvent e) {
+			}
+
+			public void mouseEntered(MouseEvent e) {
+			}
+
+			public void mouseClicked(MouseEvent e) {
+			}
+		});
+
+		addMouseMotionListener(new MouseMotionListener() {
+			public void mouseMoved(MouseEvent e) {
+			}
+
+			public void mouseDragged(MouseEvent e) {
+				Point currCoords = e.getLocationOnScreen();
+				setLocation(currCoords.x - mouseDownCompCoords.x, currCoords.y - mouseDownCompCoords.y);
 			}
 		});
 
