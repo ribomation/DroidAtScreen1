@@ -43,7 +43,7 @@ public interface Application {
 	/**
 	 * Updates the position of the frames on the screen
 	 */
-	void updateDeviceFramePositionsOnScreen();
+	void updateDeviceFramePositionsOnScreen(DeviceFrame newFrame);
 
 	List<DeviceFrame> getDevices();
 

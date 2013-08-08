@@ -24,6 +24,8 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.geom.AffineTransform;
@@ -37,6 +39,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
+import javax.swing.Timer;
 import javax.swing.WindowConstants;
 
 import org.apache.log4j.Logger;
@@ -75,6 +78,60 @@ public class DeviceFrame extends JFrame implements Comparable<DeviceFrame> {
 	private RecordingListener recordingListener;
 	private TimerTask retriever;
 	private InfoPane infoPane;
+
+	private final class AnimationActionListener implements ActionListener {
+
+		private int x = 0;
+		private int y = 0;
+		private final int velocity = 15;
+
+		public void setLocation(int x, int y) {
+			this.x = x;
+			this.y = y;
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			Point location = DeviceFrame.this.getLocation();
+			Point to = new Point(location);
+			if (Math.abs(to.x - this.x) < velocity) {
+				to.x = this.x;
+			} else {
+				if (to.x < this.x) {
+					to.x += velocity;
+				} else if (to.x > this.x) {
+					to.x -= velocity;
+				}
+			}
+			if (Math.abs(to.y - this.y) < velocity) {
+				to.y = this.y;
+			} else {
+				if (to.y < this.y) {
+					to.y += velocity;
+				} else if (to.y > this.y) {
+					to.y = this.y;
+				}
+			}
+
+			DeviceFrame.this.setLocation(to);
+
+			if (to.equals(location)) {
+				((Timer) e.getSource()).stop();
+			}
+		}
+	}
+
+	private final class AnimationTimer extends Timer {
+
+		private static final long serialVersionUID = 6541909613675931639L;
+
+		public AnimationTimer(int delay, ActionListener listener) {
+			super(delay, listener);
+		}
+	}
+
+	AnimationActionListener animationActionListener = new AnimationActionListener();
+	AnimationTimer timer = new AnimationTimer(1, animationActionListener);
 
 	public DeviceFrame(Application app, AndroidDevice device) {
 		this.app = app;
@@ -170,7 +227,7 @@ public class DeviceFrame extends JFrame implements Comparable<DeviceFrame> {
 				pack();
 				applySkin();
 				app.getDeviceTableModel().refresh();
-				app.updateDeviceFramePositionsOnScreen();
+				app.updateDeviceFramePositionsOnScreen(null);
 			}
 		}
 	}
@@ -511,4 +568,15 @@ public class DeviceFrame extends JFrame implements Comparable<DeviceFrame> {
 		return this.getName().compareTo(that.getName());
 	}
 
+	public void setLocation(int x, int y, boolean animate) {
+		if (animate) {
+			timer.stop();
+			animationActionListener.setLocation(x, y);
+			timer.setRepeats(true);
+			timer.setCoalesce(true);
+			timer.start();
+		} else {
+			super.setLocation(x, y);
+		}
+	}
 }

@@ -20,7 +20,7 @@ public class DeviceTableModel extends AbstractTableModel {
 	private static final int STATE = 3;
 	private static final int SHOW = 4;
 
-	private List<DeviceFrame> devices = new ArrayList<DeviceFrame>();
+	private final List<DeviceFrame> devices = new ArrayList<DeviceFrame>();
 	private final Logger log;
 
 	public DeviceTableModel() {
@@ -29,11 +29,11 @@ public class DeviceTableModel extends AbstractTableModel {
 
 	/**
 	 * Number of columns of the device table.
-	 * 
+	 *
 	 * <pre>
 	 *   Name  Type  Ser.No  State  Show/Hide
 	 * </pre>
-	 * 
+	 *
 	 * @return
 	 */
 	@Override
@@ -83,7 +83,7 @@ public class DeviceTableModel extends AbstractTableModel {
 	@Override
 	public Object getValueAt(int row, int col) {
 		DeviceFrame dev = devices.get(row);
-		if (dev != null)
+		if (dev != null) {
 			switch (col) {
 			case NAME:
 				return dev.getDevice().getName();
@@ -96,13 +96,15 @@ public class DeviceTableModel extends AbstractTableModel {
 			case SHOW:
 				return dev.isVisible();
 			}
+		}
 		return null;
 	}
 
 	@Override
 	public boolean isCellEditable(int row, int col) {
-		if (col == SHOW)
+		if (col == SHOW) {
 			return true;
+		}
 		return false;
 	}
 
@@ -111,8 +113,9 @@ public class DeviceTableModel extends AbstractTableModel {
 		log.debug(String.format("setValueAt [%d,%d] %s", row, col, value));
 
 		DeviceFrame dev = devices.get(row);
-		if (dev == null)
+		if (dev == null) {
 			return;
+		}
 
 		if (col == SHOW) {
 			boolean newValue = (Boolean) value;
@@ -129,18 +132,18 @@ public class DeviceTableModel extends AbstractTableModel {
 		fireTableCellUpdated(row, col);
 	}
 
-	public void add(DeviceFrame dev) {
+	public synchronized void add(DeviceFrame dev) {
 		devices.add(dev);
 		Collections.sort(devices);
 		fireTableDataChanged();
 	}
 
-	public void remove(DeviceFrame dev) {
+	public synchronized void remove(DeviceFrame dev) {
 		devices.remove(dev);
 		fireTableDataChanged();
 	}
 
-	public void removeAll() {
+	public synchronized void removeAll() {
 		devices.clear();
 		fireTableDataChanged();
 	}
@@ -149,16 +152,16 @@ public class DeviceTableModel extends AbstractTableModel {
 		fireTableDataChanged();
 	}
 
-	public List<DeviceFrame> getDevices() {
+	public synchronized List<DeviceFrame> getDevices() {
 		return devices;
 	}
 
 	public DeviceFrame getDevice(String name) {
 		for (DeviceFrame device : devices) {
-			if (device.getName().equals(name))
+			if (device.getName().equals(name)) {
 				return device;
+			}
 		}
 		return null;
 	}
-
 }

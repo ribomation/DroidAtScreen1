@@ -148,7 +148,7 @@ public class DroidAtScreenApplication implements Application, AndroidDeviceListe
 	}
 
 	@Override
-	public void updateDeviceFramePositionsOnScreen() {
+	public void updateDeviceFramePositionsOnScreen(DeviceFrame newFrame) {
 		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
 		synchronized (deviceTableModel) {
 			List<DeviceFrame> devices = deviceTableModel.getDevices();
@@ -156,20 +156,24 @@ public class DroidAtScreenApplication implements Application, AndroidDeviceListe
 			if (count > 0) {
 				// divide the screen for each frame
 				int width = (int) (screen.getWidth() / count);
+				int height = (int) screen.getHeight();
 				int offset = 0;
 				for (DeviceFrame frame : devices) {
+					if (frame.equals(newFrame)) {
+						centerFrameLocationOnScreenRegion(frame, width * count, height, 0, false);
+					}
 					// center each frame within their screen region
-					centerFrameLocationOnScreenRegion(frame, width, (int) screen.getHeight(), offset);
+					centerFrameLocationOnScreenRegion(frame, width, height, offset, true);
 					offset++;
 				}
 			}
 		}
 	}
 
-	private void centerFrameLocationOnScreenRegion(DeviceFrame frame, int screenWidth, int screenHeight, int offset) {
+	private void centerFrameLocationOnScreenRegion(DeviceFrame frame, int screenWidth, int screenHeight, int offset, boolean animate) {
 		int x = (screenWidth - frame.getWidth()) / 2;
 		int y = (screenHeight - frame.getHeight()) / 2;
-		frame.setLocation(x + screenWidth * offset, y);
+		frame.setLocation(x + screenWidth * offset, y, animate);
 	}
 
 	// --------------------------------------------
@@ -264,7 +268,7 @@ public class DroidAtScreenApplication implements Application, AndroidDeviceListe
 
 				frame.setVisible(!getSettings().isHideEmulators() || !dev.isEmulator());
 
-				updateDeviceFramePositionsOnScreen();
+				updateDeviceFramePositionsOnScreen(frame);
 			}
 		});
 	}
@@ -289,7 +293,7 @@ public class DroidAtScreenApplication implements Application, AndroidDeviceListe
 				frame.setVisible(false);
 				frame.dispose();
 
-				updateDeviceFramePositionsOnScreen();
+				updateDeviceFramePositionsOnScreen(null);
 			}
 		});
 	}
