@@ -574,6 +574,8 @@ public class DeviceFrame extends JFrame implements Comparable<DeviceFrame> {
 				factor = 0.75;
 			} else if (factor > 0.50) {
 				factor = 0.50;
+			} else if (factor > 0.25) {
+				factor = 0.25;
 			}
 		}
 		return factor;
