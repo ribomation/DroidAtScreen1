@@ -182,11 +182,11 @@ public class DeviceFrame extends JFrame implements Comparable<DeviceFrame> {
 		if (skin != null) {
 			// Apply skin
 			canvas.setSkin(skin);
-			setBackground(new Color(1.0f, 1.0f, 1.0f, 0.0f));
 			pack();
 			boolean wasVisible = isVisible();
 			dispose();
 			setUndecorated(true);
+			setBackground(new Color(1.0f, 1.0f, 1.0f, 0.0f));
 			setVisible(wasVisible);
 			forceRepaint();
 		}

@@ -20,8 +20,7 @@ public class SkinUtil {
 			in = SkinUtil.class.getResourceAsStream("/skins/" + skinName + "/frame.cfg");
 			skinProperties.load(in);
 			skinImage = GuiUtil.loadSkin(skinName);
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (Exception ignore) {
 		} finally {
 			try {
 				if (in != null) {
