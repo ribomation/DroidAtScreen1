@@ -160,8 +160,6 @@ public class DeviceFrame extends JFrame implements Comparable<DeviceFrame> {
 		add(infoPane = new InfoPane(), BorderLayout.SOUTH);
 
 		canvas.setBorder(BorderFactory.createEmptyBorder());
-		toolBar.setVisible(false);
-		infoPane.setVisible(false);
 
 		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 		addWindowListener(new WindowAdapter() {
@@ -175,28 +173,35 @@ public class DeviceFrame extends JFrame implements Comparable<DeviceFrame> {
 		});
 
 		addMouseListener(new MouseListener() {
+			@Override
 			public void mouseReleased(MouseEvent e) {
 				mouseDownCompCoords = null;
 			}
 
+			@Override
 			public void mousePressed(MouseEvent e) {
 				mouseDownCompCoords = e.getPoint();
 			}
 
+			@Override
 			public void mouseExited(MouseEvent e) {
 			}
 
+			@Override
 			public void mouseEntered(MouseEvent e) {
 			}
 
+			@Override
 			public void mouseClicked(MouseEvent e) {
 			}
 		});
 
 		addMouseMotionListener(new MouseMotionListener() {
+			@Override
 			public void mouseMoved(MouseEvent e) {
 			}
 
+			@Override
 			public void mouseDragged(MouseEvent e) {
 				Point currCoords = e.getLocationOnScreen();
 				setLocation(currCoords.x - mouseDownCompCoords.x, currCoords.y - mouseDownCompCoords.y);
@@ -221,6 +226,8 @@ public class DeviceFrame extends JFrame implements Comparable<DeviceFrame> {
 			dispose();
 			setUndecorated(true);
 			setBackground(new Color(1.0f, 1.0f, 1.0f, 0.0f));
+			toolBar.setVisible(false);
+			infoPane.setVisible(false);
 			setVisible(wasVisible);
 			forceRepaint();
 		}
