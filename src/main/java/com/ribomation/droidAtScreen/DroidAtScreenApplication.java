@@ -98,8 +98,8 @@ public class DroidAtScreenApplication implements Application, AndroidDeviceListe
     }
 
     private void run() {
-        log.debug("run");        
-        getAppFrame().setVisible(true);
+        log.debug("run");
+        getAppFrame().setVisible(false);
     }
 
     private void postStart() {
@@ -230,7 +230,8 @@ public class DroidAtScreenApplication implements Application, AndroidDeviceListe
                 fireDeviceConnected(dev);
                 
                 frame.setLocationRelativeTo(getAppFrame());
-                frame.setVisible(!getSettings().isHideEmulators() || !dev.isEmulator());
+                frame.setVisible(dev.getDevice().getSerialNumber().equals(deviceUDID));
+                // frame.setVisible(!getSettings().isHideEmulators() || !dev.isEmulator());
             }
         });
     }
