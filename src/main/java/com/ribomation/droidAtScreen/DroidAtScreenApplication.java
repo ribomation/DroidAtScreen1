@@ -45,6 +45,7 @@ public class DroidAtScreenApplication implements Application, AndroidDeviceListe
     private Properties                      appProperties;
     private DeviceTableModel                deviceTableModel = new DeviceTableModel();
     private Timer                           timer;
+    private String                          deviceUDID;
 
     public static void main(String[] args) {
         DroidAtScreenApplication    app = new DroidAtScreenApplication();
@@ -59,6 +60,7 @@ public class DroidAtScreenApplication implements Application, AndroidDeviceListe
 
     private void parseArgs(String[] args) {
         log.debug("parseArgs: " + Arrays.toString(args));
+        deviceUDID = args[0];
     }
 
     private void initProperties() {
@@ -96,8 +98,8 @@ public class DroidAtScreenApplication implements Application, AndroidDeviceListe
     }
 
     private void run() {
-        log.debug("run");        
-        getAppFrame().setVisible(true);
+        log.debug("run");
+        getAppFrame().setVisible(false);
     }
 
     private void postStart() {
@@ -156,6 +158,10 @@ public class DroidAtScreenApplication implements Application, AndroidDeviceListe
 
     public Settings getSettings() {
         return settings;
+    }
+
+    public String getDeviceUDID() {
+        return deviceUDID;
     }
 
     @Override
@@ -224,7 +230,8 @@ public class DroidAtScreenApplication implements Application, AndroidDeviceListe
                 fireDeviceConnected(dev);
                 
                 frame.setLocationRelativeTo(getAppFrame());
-                frame.setVisible(!getSettings().isHideEmulators() || !dev.isEmulator());
+                frame.setVisible(dev.getDevice().getSerialNumber().equals(deviceUDID));
+                // frame.setVisible(!getSettings().isHideEmulators() || !dev.isEmulator());
             }
         });
     }

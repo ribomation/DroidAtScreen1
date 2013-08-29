@@ -67,7 +67,8 @@ public class DeviceFrame extends JFrame implements Comparable<DeviceFrame> {
         setIconImage(GuiUtil.loadIcon("device").getImage());
         setResizable(false);
         add(canvas = new ImageCanvas(), BorderLayout.CENTER);
-        add(toolBar = createToolBar(), BorderLayout.WEST);
+        // [8/27/13 RDV] removes sidebar from device view
+        // add(toolBar = createToolBar(), BorderLayout.WEST);
         add(infoPane = new InfoPane(), BorderLayout.SOUTH);
 
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
