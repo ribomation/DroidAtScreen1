@@ -34,7 +34,6 @@ import java.awt.event.WindowEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.util.TimerTask;
 
 import javax.swing.BorderFactory;
@@ -48,10 +47,6 @@ import javax.swing.WindowConstants;
 
 import org.apache.log4j.Logger;
 
-import com.android.ddmlib.AdbCommandRejectedException;
-import com.android.ddmlib.IShellOutputReceiver;
-import com.android.ddmlib.ShellCommandUnresponsiveException;
-import com.android.ddmlib.TimeoutException;
 import com.ribomation.droidAtScreen.Application;
 import com.ribomation.droidAtScreen.Settings;
 import com.ribomation.droidAtScreen.Skin;
