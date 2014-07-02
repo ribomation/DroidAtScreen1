@@ -34,6 +34,7 @@ import java.awt.event.WindowEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.TimerTask;
 
 import javax.swing.BorderFactory;
@@ -47,6 +48,10 @@ import javax.swing.WindowConstants;
 
 import org.apache.log4j.Logger;
 
+import com.android.ddmlib.AdbCommandRejectedException;
+import com.android.ddmlib.IShellOutputReceiver;
+import com.android.ddmlib.ShellCommandUnresponsiveException;
+import com.android.ddmlib.TimeoutException;
 import com.ribomation.droidAtScreen.Application;
 import com.ribomation.droidAtScreen.Settings;
 import com.ribomation.droidAtScreen.Skin;
@@ -57,6 +62,7 @@ import com.ribomation.droidAtScreen.cmd.ScaleCommand;
 import com.ribomation.droidAtScreen.cmd.ScreenshotCommand;
 import com.ribomation.droidAtScreen.cmd.UpsideDownCommand;
 import com.ribomation.droidAtScreen.dev.AndroidDevice;
+import com.ribomation.droidAtScreen.dev.AndroidDeviceShellCommand;
 import com.ribomation.droidAtScreen.dev.ScreenImage;
 
 /**
@@ -138,7 +144,7 @@ public class DeviceFrame extends JFrame implements Comparable<DeviceFrame> {
 	AnimationActionListener animationActionListener = new AnimationActionListener();
 	AnimationTimer timer = new AnimationTimer(1, animationActionListener);
 
-	public DeviceFrame(Application app, AndroidDevice device) {
+	public DeviceFrame(Application app, final AndroidDevice device) {
 		this.app = app;
 		this.device = device;
 		this.log = Logger.getLogger(DeviceFrame.class.getName() + ":" + device.getName());
@@ -171,6 +177,8 @@ public class DeviceFrame extends JFrame implements Comparable<DeviceFrame> {
 				DeviceFrame.this.app.getDeviceTableModel().refresh();
 			}
 		});
+		
+		final AndroidDeviceShellCommand shellCmd = new AndroidDeviceShellCommand(device, this);
 
 		addMouseListener(new MouseListener() {
 			@Override
@@ -193,6 +201,7 @@ public class DeviceFrame extends JFrame implements Comparable<DeviceFrame> {
 
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				shellCmd.tap(e.getPoint());
 			}
 		});
 
