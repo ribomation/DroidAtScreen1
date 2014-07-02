@@ -144,7 +144,7 @@ public class DeviceFrame extends JFrame implements Comparable<DeviceFrame> {
 	AnimationActionListener animationActionListener = new AnimationActionListener();
 	AnimationTimer timer = new AnimationTimer(1, animationActionListener);
 
-	public DeviceFrame(Application app, final AndroidDevice device) {
+	public DeviceFrame(Application app, AndroidDevice device) {
 		this.app = app;
 		this.device = device;
 		this.log = Logger.getLogger(DeviceFrame.class.getName() + ":" + device.getName());
