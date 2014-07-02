@@ -57,6 +57,7 @@ import com.ribomation.droidAtScreen.cmd.ScaleCommand;
 import com.ribomation.droidAtScreen.cmd.ScreenshotCommand;
 import com.ribomation.droidAtScreen.cmd.UpsideDownCommand;
 import com.ribomation.droidAtScreen.dev.AndroidDevice;
+import com.ribomation.droidAtScreen.dev.AndroidDeviceShellCommand;
 import com.ribomation.droidAtScreen.dev.ScreenImage;
 
 /**
@@ -171,6 +172,8 @@ public class DeviceFrame extends JFrame implements Comparable<DeviceFrame> {
 				DeviceFrame.this.app.getDeviceTableModel().refresh();
 			}
 		});
+		
+		final AndroidDeviceShellCommand shellCmd = new AndroidDeviceShellCommand(device, this);
 
 		addMouseListener(new MouseListener() {
 			@Override
@@ -193,6 +196,7 @@ public class DeviceFrame extends JFrame implements Comparable<DeviceFrame> {
 
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				shellCmd.tap(e.getPoint());
 			}
 		});
 
