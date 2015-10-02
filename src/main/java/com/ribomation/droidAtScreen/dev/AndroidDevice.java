@@ -12,12 +12,15 @@
 
 package com.ribomation.droidAtScreen.dev;
 
-import java.awt.*;
+import com.android.ddmlib.AdbCommandRejectedException;
+import com.android.ddmlib.IDevice;
+import com.android.ddmlib.IShellOutputReceiver;
+import com.android.ddmlib.RawImage;
+import com.android.ddmlib.TimeoutException;
+import java.awt.Point;
 import java.io.IOException;
 import java.util.Locale;
 import java.util.Map;
-
-import com.android.ddmlib.*;
 import org.apache.log4j.Logger;
 
 /**
@@ -67,11 +70,11 @@ public class AndroidDevice implements Comparable<AndroidDevice> {
 		return null;
 	}
 
-	public void tap(Point p) {
+	protected void shellCommand(String command)
+	{
 		try {
-			String cmd = String.format(Locale.ENGLISH, "input tap %.3f %.3f", p.getX(), p.getY());
-			log.debug("SEND: "+cmd);
-			target.executeShellCommand(cmd, new IShellOutputReceiver() {
+			log.debug("SEND: "+command);
+			target.executeShellCommand(command, new IShellOutputReceiver() {
                 @Override
                 public void addOutput(byte[] data, int offset, int length) {
                     log.debug(String.format("SHELL: %s", new String(data, offset, length)));
@@ -84,10 +87,18 @@ public class AndroidDevice implements Comparable<AndroidDevice> {
                 public boolean isCancelled() { return false; }
             });
 		} catch (Exception e) {
-			log.debug("Failed to send 'input tap' command to the device", e);
+			log.debug("Failed to send '" + command + "' command to the device", e);
 		}
 	}
-	
+
+	public void tap(Point p) {
+		shellCommand(String.format(Locale.ENGLISH, "input tap %.3f %.3f", p.getX(), p.getY()));
+	}
+
+	public void key(String key)
+	{
+		shellCommand(String.format(Locale.ENGLISH, "input keyevent %s", key));
+	}
 	
 	public ConnectionState getState() {
 		return state;
