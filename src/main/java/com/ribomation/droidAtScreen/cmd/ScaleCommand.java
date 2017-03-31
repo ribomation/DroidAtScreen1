@@ -30,7 +30,7 @@ public class ScaleCommand extends CommandWithTarget<DeviceFrame> {
 	}
 
     @Override
-    protected void doExecute(Application app, final DeviceFrame deviceFrame) {
+    protected void doExecute(final Application app, final DeviceFrame deviceFrame) {
         final JDialog dlg = PreferredScaleCommand.createScaleDialog(app, deviceFrame.getScale(),
                 new PreferredScaleCommand.OnScaleUpdatedListener() {
                     @Override
@@ -47,6 +47,7 @@ public class ScaleCommand extends CommandWithTarget<DeviceFrame> {
                         deviceFrame.pack();
                         deviceFrame.invalidate();
                         deviceFrame.repaint();
+                        app.getSettings().setPreferredScale(value);
                     }
                 });
         dlg.setLocationRelativeTo(deviceFrame);

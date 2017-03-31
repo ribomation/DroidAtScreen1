@@ -67,9 +67,8 @@ public class AndroidDevice implements Comparable<AndroidDevice> {
 		return null;
 	}
 
-	public void tap(Point p) {
+	public void sendCommand(String cmd) {
 		try {
-			String cmd = String.format(Locale.ENGLISH, "input tap %.3f %.3f", p.getX(), p.getY());
 			log.debug("SEND: "+cmd);
 			target.executeShellCommand(cmd, new IShellOutputReceiver() {
                 @Override
@@ -84,7 +83,7 @@ public class AndroidDevice implements Comparable<AndroidDevice> {
                 public boolean isCancelled() { return false; }
             });
 		} catch (Exception e) {
-			log.debug("Failed to send 'input tap' command to the device", e);
+			log.debug("Failed to send '"+cmd+"' command to the device", e);
 		}
 	}
 	
