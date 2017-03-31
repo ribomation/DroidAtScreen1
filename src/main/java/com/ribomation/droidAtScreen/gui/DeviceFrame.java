@@ -12,20 +12,11 @@
 
 package com.ribomation.droidAtScreen.gui;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.Point2D;
-import java.awt.image.BufferedImage;
-import java.util.TimerTask;
-
-import javax.swing.*;
-
-import org.apache.log4j.Logger;
-
 import com.ribomation.droidAtScreen.Application;
 import com.ribomation.droidAtScreen.Settings;
 import com.ribomation.droidAtScreen.Skin;
+import com.ribomation.droidAtScreen.cmd.BackButtonCommand;
+import com.ribomation.droidAtScreen.cmd.HomeButtonCommand;
 import com.ribomation.droidAtScreen.cmd.OrientationCommand;
 import com.ribomation.droidAtScreen.cmd.PropertiesCommand;
 import com.ribomation.droidAtScreen.cmd.RecordingCommand;
@@ -34,6 +25,41 @@ import com.ribomation.droidAtScreen.cmd.ScreenshotCommand;
 import com.ribomation.droidAtScreen.cmd.UpsideDownCommand;
 import com.ribomation.droidAtScreen.dev.AndroidDevice;
 import com.ribomation.droidAtScreen.dev.ScreenImage;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.GraphicsEnvironment;
+import java.awt.GridLayout;
+import java.awt.Image;
+import java.awt.Insets;
+import java.awt.Point;
+import java.awt.RenderingHints;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Point2D;
+import java.awt.image.BufferedImage;
+import java.util.TimerTask;
+import javax.swing.BorderFactory;
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollBar;
+import javax.swing.JScrollPane;
+import javax.swing.SwingConstants;
+import javax.swing.Timer;
+import javax.swing.WindowConstants;
+import org.apache.log4j.Logger;
 
 /**
  * Frame holder for the device image.
@@ -269,13 +295,15 @@ public class DeviceFrame extends JFrame implements Comparable<DeviceFrame> {
 	}
 
 	protected JComponent createToolBar() {
-		JPanel buttons = new JPanel(new GridLayout(6, 1, 0, 8));
+		JPanel buttons = new JPanel(new GridLayout(9, 1, 0, 8));
 		buttons.add(new OrientationCommand(this).newButton());
 		buttons.add(new UpsideDownCommand(this).newButton());
 		buttons.add(new ScaleCommand(this).newButton());
 		buttons.add(new ScreenshotCommand(this).newButton());
 		buttons.add(new RecordingCommand(this).newButton());
 		buttons.add(new PropertiesCommand(this).newButton());
+		buttons.add(new BackButtonCommand(this).newButton());
+		buttons.add(new HomeButtonCommand(this).newButton());
 
 		JPanel tb = new JPanel(new FlowLayout());
 		tb.setBorder(BorderFactory.createEmptyBorder());
