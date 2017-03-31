@@ -12,17 +12,6 @@
 
 package com.ribomation.droidAtScreen.gui;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.Point2D;
-import java.awt.image.BufferedImage;
-import java.util.TimerTask;
-
-import javax.swing.*;
-
-import org.apache.log4j.Logger;
-
 import com.ribomation.droidAtScreen.Application;
 import com.ribomation.droidAtScreen.Settings;
 import com.ribomation.droidAtScreen.Skin;
@@ -34,6 +23,42 @@ import com.ribomation.droidAtScreen.cmd.ScreenshotCommand;
 import com.ribomation.droidAtScreen.cmd.UpsideDownCommand;
 import com.ribomation.droidAtScreen.dev.AndroidDevice;
 import com.ribomation.droidAtScreen.dev.ScreenImage;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.GraphicsEnvironment;
+import java.awt.GridLayout;
+import java.awt.Image;
+import java.awt.Insets;
+import java.awt.Point;
+import java.awt.RenderingHints;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Point2D;
+import java.awt.image.BufferedImage;
+import java.util.Date;
+import java.util.TimerTask;
+import javax.swing.BorderFactory;
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollBar;
+import javax.swing.JScrollPane;
+import javax.swing.SwingConstants;
+import javax.swing.Timer;
+import javax.swing.WindowConstants;
+import org.apache.log4j.Logger;
 
 /**
  * Frame holder for the device image.
@@ -149,20 +174,62 @@ public class DeviceFrame extends JFrame implements Comparable<DeviceFrame> {
 				DeviceFrame.this.app.getDeviceTableModel().refresh();
 			}
 		});
-		
-		canvas.addMouseListener(new MouseAdapter() {
+
+		MouseAdapter mouseAdapter = new MouseAdapter() {
+			public static final long LONG_TAP_TIME = 200;
+
+			private Point pressedAt = null;
+			private Date pressedTime = null;
+
 			@Override
-			public void mouseClicked(MouseEvent e) {
-				Point p = e.getPoint();
-				log.debug(String.format("mouse: %s", p));
-				p = new Point(
-						(int) (p.getX() * 100) / getScale(),
-						(int) (p.getY() * 100) / getScale()
-				);
-				log.debug(String.format("scaled: %s", p));
-				device.tap(p);
+			public void mousePressed(MouseEvent e)
+			{
+				pressedAt = e.getPoint();
+				pressedTime = new Date();
 			}
-		});
+
+			@Override
+			public void mouseReleased(MouseEvent e)
+			{
+				if(pressedAt.equals(e.getPoint()) && getPressTime() < LONG_TAP_TIME)
+				{
+					tap(e);
+				}
+				else
+				{
+					swipe(e);
+				}
+			}
+
+			public void tap(MouseEvent e) {
+				Point p = e.getPoint();
+				log.debug(String.format("mouse: %s", e.getPoint()));
+				device.tap(getScaledPoint(p));
+			}
+
+			protected void swipe(MouseEvent e)
+			{
+				Point p = e.getPoint();
+				long pressTime = getPressTime();
+				log.debug(String.format("mouse swiped from %s to %s for %d ms", pressedAt, e.getPoint(), pressTime));
+				device.swipe(getScaledPoint(pressedAt), getScaledPoint(p), pressTime);
+			}
+
+			protected Point getScaledPoint(Point point)
+			{
+				return new Point(
+					(int) (point.getX() * 100) / getScale(),
+					(int) (point.getY() * 100) / getScale()
+				);
+			}
+
+			protected long getPressTime()
+			{
+				return (new Date()).getTime() - pressedTime.getTime();
+			}
+		};
+		canvas.addMouseListener(mouseAdapter);
+		canvas.addMouseMotionListener(mouseAdapter);
 
 		startRetriever();
 		pack();
