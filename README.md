@@ -7,7 +7,7 @@ at a computer. It's typically used for demo and training.
 Prerequisites
 -------------
 
-* Java 6
+* Java 8
 * Android SDK, installed and configured
 * Environment variable ANDROID_HOME (or ANDROID_SDK_HOME) pointing the the Android SDK installation directory
 * USB driver for the target Android device installed

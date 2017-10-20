@@ -12,7 +12,7 @@
 
     <properties>
         <app.class>com.ribomation.droidAtScreen.DroidAtScreenApplication</app.class>
-        <compile.java.version>1.6</compile.java.version>
+        <compile.java.version>1.8</compile.java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.build.timestamp.format>yyyy-MM-dd</maven.build.timestamp.format>
