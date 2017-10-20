@@ -31,6 +31,7 @@ import org.apache.log4j.Logger;
 import com.ribomation.droidAtScreen.Application;
 import com.ribomation.droidAtScreen.cmd.Command;
 import com.ribomation.droidAtScreen.cmd.QuitCommand;
+import javax.swing.UIManager;
 
 /**
  * The main GUI window.
@@ -38,7 +39,7 @@ import com.ribomation.droidAtScreen.cmd.QuitCommand;
  * @user jens
  * @date 2010-jan-18 17:44:12
  */
-public class ApplicationFrame extends JFrame {
+public class ApplicationFrame extends JFrame {    
 	private Logger log = Logger.getLogger(ApplicationFrame.class);
 	private Application app;
 	private StatusBar statusBar;
@@ -59,6 +60,11 @@ public class ApplicationFrame extends JFrame {
 	}
 
 	public void initGUI() {
+            try {
+                UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+            } catch (Throwable e) {
+                e.printStackTrace();
+            }
 		setIconImage(GuiUtil.loadIcon("device").getImage());
 		setTitle(app.getInfo().getName() + ", Version " + app.getInfo().getVersion());
 		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
