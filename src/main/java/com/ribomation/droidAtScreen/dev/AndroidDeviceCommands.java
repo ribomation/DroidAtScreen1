@@ -3,7 +3,13 @@ package com.ribomation.droidAtScreen.dev;
 import com.ribomation.droidAtScreen.gui.DeviceFrame;
 import org.apache.log4j.Logger;
 
-import java.awt.*;
+import javax.swing.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.KeyEventDispatcher;
+import java.awt.KeyboardFocusManager;
+import java.awt.Point;
+import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -17,15 +23,40 @@ public class AndroidDeviceCommands extends MouseAdapter implements KeyEventDispa
 	public AndroidDeviceCommands(DeviceFrame deviceFrame) {
 		log = Logger.getLogger(this.getClass().getName() + ":" + deviceFrame.getDevice().getName());
 		this.deviceFrame = deviceFrame;
+                // Grab keyboard events
 		KeyboardFocusManager manager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
 		manager.addKeyEventDispatcher(this);
+                // Disable space bar to activate some of the UI buttons
+                InputMap im = (InputMap) UIManager.get("Button.focusInputMap");
+                im.put(KeyStroke.getKeyStroke("pressed SPACE"), null);
+                im.put(KeyStroke.getKeyStroke("released SPACE"), null);
 	}
 
 	@Override
 	public boolean dispatchKeyEvent(KeyEvent e) {
 		if (e.getID() == KeyEvent.KEY_TYPED) {
-			sendKey(e.getKeyChar());
-		}
+			// Most of the ASCII chars http://www.asciitable.com/
+                        if (e.getKeyChar() >= 33 && e.getKeyChar() <= 126) {
+                            sendText(e.getKeyChar());
+                        } else {
+                            sendKey(e.getKeyChar());
+                        }
+		} else if (e.getID() == KeyEvent.KEY_RELEASED) {
+                    // Home or End keyboard buttons
+                    if (e.getKeyCode() == KeyEvent.VK_HOME || e.getKeyCode() == KeyEvent.VK_END) {
+ 				sendKey(e.getKeyCode());
+                    }
+                    // Ctrol + V
+                    if (e.getKeyCode() == KeyEvent.VK_V && e.getModifiers() == KeyEvent.CTRL_MASK) {
+ 				try {
+ 					Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+ 					String text = (String) clipboard.getData(DataFlavor.stringFlavor);
+ 					sendText(text);
+ 				} catch (Exception ex) {
+ 					log.error(ex);
+ 				}
+ 			}
+                }
 		return false;
 	}
 
@@ -82,15 +113,45 @@ public class AndroidDeviceCommands extends MouseAdapter implements KeyEventDispa
 		deviceFrame.getDevice().sendCommand(cmd);
 	}
 
-	private void sendKey(int key) {
+	private void sendText(String text) {
+ 		String cmd = String.format(Locale.ENGLISH, "input text '%s'", text);
+ 		deviceFrame.getDevice().sendCommand(cmd);
+ 	}
+ 
+ 	private void sendText(char letter) {
+ 		sendText(String.valueOf(letter));
+ 	}
+ 
+        private void sendKey(int key) {
 		int eventKey = 0;
 		switch (key) {
+			case KeyEvent.VK_HOME:
+ 				eventKey = AndroidKeyEvent.KEYCODE_HOME;
+ 				break;
+ 			case KeyEvent.VK_END:
+ 				eventKey = AndroidKeyEvent.KEYCODE_POWER;
+ 				break;                    
 			case KeyEvent.VK_CONTEXT_MENU:
 				eventKey = AndroidKeyEvent.KEYCODE_MENU;
 				break;
 			case KeyEvent.VK_ESCAPE:
 				eventKey = AndroidKeyEvent.KEYCODE_BACK;
 				break;
+			case KeyEvent.VK_ENTER:
+				eventKey = AndroidKeyEvent.KEYCODE_ENTER;
+				break;
+			case KeyEvent.VK_DELETE:
+				eventKey = AndroidKeyEvent.KEYCODE_FORWARD_DEL;
+ 				break;
+ 			case KeyEvent.VK_BACK_SPACE:
+ 				eventKey = AndroidKeyEvent.KEYCODE_DEL;
+ 				break;
+ 			case KeyEvent.VK_SPACE:
+ 				eventKey = AndroidKeyEvent.KEYCODE_SPACE;
+ 				break;
+ 			case KeyEvent.VK_TAB:
+ 				eventKey = AndroidKeyEvent.KEYCODE_TAB;
+ 				break;                                
 		}
 		if (eventKey != 0) {
 			String cmd = String.format(Locale.ENGLISH, "input keyevent %s", eventKey);
