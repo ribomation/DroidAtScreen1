@@ -38,18 +38,21 @@ public class AndroidDeviceCommands extends MouseAdapter implements KeyEventDispa
 	@Override
 	public void mouseReleased(MouseEvent e) {
 		log.debug("mouseReleased");
-		Point to = getScaledPoint(e);
-		if (startPoint.equals(to)) {
+		Point point = getScaledPoint(e);
+		if (startPoint.equals(point)) {
 			switch (e.getButton()) {
 				case MouseEvent.BUTTON1:
-					tap(to);
+					tap(point);
 					break;
-				case MouseEvent.BUTTON3:
+				case MouseEvent.BUTTON2:
 					sendKey(KeyEvent.VK_CONTEXT_MENU);
 					break;
+                case MouseEvent.BUTTON3:
+                        tapAndHold(point);
+                        break;
 			}
 		} else {
-			swipe(startPoint, to);
+			swipe(startPoint, point);
 		}
 	}
 
@@ -65,13 +68,17 @@ public class AndroidDeviceCommands extends MouseAdapter implements KeyEventDispa
 	}
 
 	private void tap(Point p) {
-		String cmd = String.format(Locale.ENGLISH, "input tap %.1f %.1f", p.getX(), p.getY());
+		String cmd = String.format(Locale.ENGLISH, "input tap %s %s", p.getX(), p.getY());
 		deviceFrame.getDevice().sendCommand(cmd);
 	}
 
-	private void swipe(Point from, Point to) {
+	private void tapAndHold(Point p) {
+            String cmd = String.format(Locale.ENGLISH, "input swipe %s %s %s %s 1000", p.getX(), p.getY(), p.getX(), p.getY());
+            deviceFrame.getDevice().sendCommand(cmd);
+        }
+        private void swipe(Point from, Point to) {
 		String cmd = String.format(Locale.ENGLISH,
-				"input swipe %.1f %.1f %.1f %.1f", from.getX(), from.getY(), to.getX(), to.getY());
+				"input swipe %s %s %s %s", from.getX(), from.getY(), to.getX(), to.getY());
 		deviceFrame.getDevice().sendCommand(cmd);
 	}
 
