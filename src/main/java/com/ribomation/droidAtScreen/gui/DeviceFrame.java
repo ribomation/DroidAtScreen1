@@ -21,6 +21,7 @@ import java.util.TimerTask;
 
 import javax.swing.*;
 
+import com.ribomation.droidAtScreen.dev.AndroidDeviceCommands;
 import org.apache.log4j.Logger;
 
 import com.ribomation.droidAtScreen.Application;
@@ -150,19 +151,7 @@ public class DeviceFrame extends JFrame implements Comparable<DeviceFrame> {
 			}
 		});
 		
-		canvas.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				Point p = e.getPoint();
-				log.debug(String.format("mouse: %s", p));
-				p = new Point(
-						(int) (p.getX() * 100) / getScale(),
-						(int) (p.getY() * 100) / getScale()
-				);
-				log.debug(String.format("scaled: %s", p));
-				device.tap(p);
-			}
-		});
+		canvas.addMouseListener(new AndroidDeviceCommands(this));
 
 		startRetriever();
 		pack();
