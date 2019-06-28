@@ -9,7 +9,6 @@
  * You are free to use this software and the source code as you like.
  * We do appreciate if you attribute were it came from.
  */
-
 package com.ribomation.droidAtScreen.cmd;
 
 import javax.swing.JDialog;
@@ -23,39 +22,44 @@ import com.ribomation.droidAtScreen.gui.DeviceFrame;
  * User: Jens Created: 2012-03-22, 22:18
  */
 public class ScaleCommand extends CommandWithTarget<DeviceFrame> {
-	public ScaleCommand(DeviceFrame deviceFrame) {
-		super(deviceFrame);
-		setIcon("scale");
-		updateButton(deviceFrame);
-	}
+
+    public ScaleCommand(DeviceFrame deviceFrame) {
+        super(deviceFrame);
+        configure(deviceFrame);
+    }
 
     @Override
     protected void doExecute(final Application app, final DeviceFrame deviceFrame) {
         final JDialog dlg = PreferredScaleCommand.createScaleDialog(app, deviceFrame.getScale(),
                 new PreferredScaleCommand.OnScaleUpdatedListener() {
-                    @Override
-                    public void onScaleUpdated(int value) {
-                        getLog().debug("onScaleUpdated: value=" + value);
-                        updateButton(deviceFrame);
-                        deviceFrame.updateScale(value);
-                    }
+            @Override
+            public void onScaleUpdated(int value) {
+                getLog().debug("onScaleUpdated: value=" + value);
+                updateButton(deviceFrame);
+                deviceFrame.updateScale(value);
+            }
 
-                    @Override
-                    public void onFinishScaleUpdated(int value) {
-                        getLog().debug("onFinishScaleUpdated: value=" + value);
-                        deviceFrame.updateScale(value);
-                        deviceFrame.pack();
-                        deviceFrame.invalidate();
-                        deviceFrame.repaint();
-                        app.getSettings().setPreferredScale(value);
-                    }
-                });
+            @Override
+            public void onFinishScaleUpdated(int value) {
+                getLog().debug("onFinishScaleUpdated: value=" + value);
+                deviceFrame.updateScale(value);
+                deviceFrame.pack();
+                deviceFrame.invalidate();
+                deviceFrame.repaint();
+                app.getSettings().setPreferredScale(value);
+            }
+        });
         dlg.setLocationRelativeTo(deviceFrame);
         dlg.setVisible(true);
     }
 
-	@Override
-	protected void updateButton(DeviceFrame deviceFrame) {
-		setTooltip(String.format("Current scale (%d%%)", deviceFrame.getScale()));
-	}
+    @Override
+    protected void updateButton(DeviceFrame deviceFrame) {
+        setTooltip(String.format("Current scale (%d%%)", deviceFrame.getScale()));
+    }
+
+    private void configure(DeviceFrame deviceFrame) {
+        setIcon("scale");
+        updateButton(deviceFrame);
+    }
 }
