@@ -26,11 +26,11 @@
             <version>4.7</version>
             <scope>test</scope>
         </dependency>
-
+        
         <dependency>
             <groupId>com.android.tools.ddms</groupId>
             <artifactId>ddmlib</artifactId>
-            <version>26.1.2</version>
+            <version>25.3.0</version>
         </dependency>
 
         <dependency>
@@ -72,7 +72,7 @@
                         <configuration>
                             <transformers>
                                 <transformer
-                                        implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <mainClass>${app.class}</mainClass>
                                 </transformer>
                             </transformers>
@@ -113,5 +113,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>
