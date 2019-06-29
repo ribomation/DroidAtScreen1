@@ -49,7 +49,7 @@ public class ApplicationFrame extends JFrame {
     private final String[] FILE_MENU = {"Quit"};
     private final String[] IMAGE_MENU = {"ImageDirectory", "ImageFormat", "AskBeforeScreenshot"};
     private final String[] ADB_MENU = {"AdbRestart", "AdbReloadDevices", "AdbExePath"};
-    private final String[] OPTIONS_MENU = {"PreferredScale", "-", "HideEmulators", "AskBeforeQuit", "-", "LookAndFeel", "-", "RemoveProperties"};
+    private final String[] OPTIONS_MENU = {"PreferredScale", "-", "HideEmulators", "AskBeforeQuit", "-", "LookAndFeel", "-", "ChangeLanguage", "-", "RemoveProperties"};
     private final String[] HELP_MENU = {"Help", "-", "Home", "Mail", "-", "About"};
 
     public ApplicationFrame(Application app) throws HeadlessException {
@@ -86,11 +86,11 @@ public class ApplicationFrame extends JFrame {
 
     protected JMenuBar createMenubar() {
         JMenuBar mb = new JMenuBar();
-        mb.add(GuiUtil.createMenu("File", 'F', FILE_MENU));
-        mb.add(GuiUtil.createMenu("Image", 'I', IMAGE_MENU));
-        mb.add(GuiUtil.createMenu("ADB", 'A', ADB_MENU));
-        mb.add(GuiUtil.createMenu("Options", 'O', OPTIONS_MENU));
-        mb.add(GuiUtil.createMenu("Help", 'H', HELP_MENU));
+        mb.add(GuiUtil.createMenu(app.getLanguage().getProperty("file"), 'F', FILE_MENU));
+        mb.add(GuiUtil.createMenu(app.getLanguage().getProperty("image"), 'I', IMAGE_MENU));
+        mb.add(GuiUtil.createMenu(app.getLanguage().getProperty("adb"), 'A', ADB_MENU));
+        mb.add(GuiUtil.createMenu(app.getLanguage().getProperty("options"), 'O', OPTIONS_MENU));
+        mb.add(GuiUtil.createMenu(app.getLanguage().getProperty("help"), 'H', HELP_MENU));
         return mb;
     }
 
@@ -103,7 +103,7 @@ public class ApplicationFrame extends JFrame {
         tbl.setPreferredScrollableViewportSize(new Dimension(450, 150));
 
         JScrollPane pane = new JScrollPane(tbl);
-        pane.setBorder(BorderFactory.createTitledBorder("Devices"));
+        pane.setBorder(BorderFactory.createTitledBorder(app.getLanguage().getProperty("devices")));
 
         return pane;
     }

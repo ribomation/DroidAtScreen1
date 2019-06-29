@@ -47,12 +47,16 @@ public class AboutCommand extends Command {
         content.add(new JLabel("<html>" + aboutText), BorderLayout.CENTER);
         content.add(new JLabel("<html>" + linkText + systemText), BorderLayout.SOUTH);
 
-        JOptionPane.showMessageDialog(null, content, info.getName() + " - Version " + info.getVersion(), JOptionPane.PLAIN_MESSAGE);
+        JOptionPane.showMessageDialog(null, content,
+                info.getVersion()
+                + info.getName() + " - "
+                + getApplication().getLanguage().getProperty("version"),
+                JOptionPane.PLAIN_MESSAGE);
     }
 
     private void configure() {
-        setLabel("About...");
-        setTooltip("Shows info about this application");
+        setLabel("about");
+        setTooltip("about_tootltip");
         setIcon("about");
         setMnemonic('A');
     }

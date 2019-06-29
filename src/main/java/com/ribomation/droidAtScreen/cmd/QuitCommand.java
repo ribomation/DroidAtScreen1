@@ -44,13 +44,16 @@ public class QuitCommand extends Command {
     }
 
     private boolean askUser(Application app) {
-        int rc = JOptionPane.showConfirmDialog(app.getAppFrame(), "Do you really want to quit?", "Quit?", JOptionPane.OK_CANCEL_OPTION);
+        int rc = JOptionPane.showConfirmDialog(app.getAppFrame(),
+                app.getLanguage().getProperty("quit_question"), 
+                app.getLanguage().getProperty("quit_question_title"), 
+                JOptionPane.OK_CANCEL_OPTION);
         return rc == JOptionPane.OK_OPTION;
     }
 
     private void configure() {
-        setLabel("Quit");
-        setTooltip("Quits the application");
+        setLabel("quit");
+        setTooltip("quit_tooltip");
         setIcon("exit");
         setMnemonic('Q');
     }

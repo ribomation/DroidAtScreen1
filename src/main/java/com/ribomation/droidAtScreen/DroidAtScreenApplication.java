@@ -51,6 +51,7 @@ public class DroidAtScreenApplication implements Application, AndroidDeviceListe
     private ApplicationFrame appFrame;
     private final List<AndroidDeviceListener> deviceListeners = new ArrayList<>();
     private Settings settings;
+    private Language language;
     private Properties appProperties;
     private final DeviceTableModel deviceTableModel = new DeviceTableModel();
     private Timer timer;
@@ -84,6 +85,8 @@ public class DroidAtScreenApplication implements Application, AndroidDeviceListe
 
         settings = new Settings();
         settings.dump();
+
+        language = new Language(settings.getLanguage());
     }
 
     private void initCommands() {
@@ -126,6 +129,16 @@ public class DroidAtScreenApplication implements Application, AndroidDeviceListe
             getDeviceManager().setAdbExecutable(adbExePath);
             getDeviceManager().createBridge();
         }
+    }
+
+    @Override
+    public void reloadGUI() {
+        log.debug("reloadGUI");
+        initProperties();
+        appFrame.dispose();
+        appFrame = new ApplicationFrame(this);
+        appFrame.initGUI();
+        run();
     }
 
     private File isExe(String envName) {
@@ -257,13 +270,13 @@ public class DroidAtScreenApplication implements Application, AndroidDeviceListe
 
         SwingUtilities.invokeLater(() -> {
             getAppFrame().getStatusBar().message("Connected to " + dev.getName());
-            
+
             DeviceFrame frame = new DeviceFrame(DroidAtScreenApplication.this, dev);
             deviceTableModel.add(frame);
             fireDeviceConnected(dev);
-            
+
             frame.setVisible(!getSettings().isHideEmulators() || !dev.isEmulator());
-            
+
             updateDeviceFramePositionsOnScreen(frame);
         });
     }
@@ -274,18 +287,18 @@ public class DroidAtScreenApplication implements Application, AndroidDeviceListe
 
         SwingUtilities.invokeLater(() -> {
             getAppFrame().getStatusBar().message("Disconnected from " + dev.getName());
-            
+
             DeviceFrame frame = deviceTableModel.getDevice(dev.getName());
             if (frame == null) {
                 return;
             }
-            
+
             deviceTableModel.remove(frame);
             fireDeviceDisconnected(dev);
             frame.stopRetriever();
             frame.setVisible(false);
             frame.dispose();
-            
+
             updateDeviceFramePositionsOnScreen(null);
         });
     }
@@ -312,5 +325,10 @@ public class DroidAtScreenApplication implements Application, AndroidDeviceListe
         deviceListeners.forEach((listener) -> {
             listener.disconnected(dev);
         });
+    }
+
+    @Override
+    public Language getLanguage() {
+        return language;
     }
 }

@@ -192,6 +192,14 @@ public class Settings {
     public void setAutoShow(boolean value) {
         set("autoShow", value);
     }
+    
+    public String getLanguage() {
+        return applicationPreferences.get("language", "english");
+    }
+
+    public void setLanguage(String value) {
+        set("language", value);
+    }
 
     private void set(String name, String value) {
         String old = applicationPreferences.get(name, "");

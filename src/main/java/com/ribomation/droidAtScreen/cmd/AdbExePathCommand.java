@@ -25,7 +25,6 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
 import com.ribomation.droidAtScreen.Application;
-import java.awt.event.ActionListener;
 
 /**
  * DESCRIPTION
@@ -102,8 +101,8 @@ public class AdbExePathCommand extends Command {
     }
     
     private void configure() {
-        setLabel("ADB Executable Path");
-        setTooltip("Sets the path to the Android Device Debugger (ADB) executable");
+        setLabel("adb_exe_path");
+        setTooltip("adb_exe_path_tooltip");
         setIcon("app");
     }
 }

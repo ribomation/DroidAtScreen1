@@ -32,6 +32,8 @@ public interface Application {
     ApplicationFrame getAppFrame();
 
     Settings getSettings();
+    
+    Language getLanguage();
 
     Info getInfo();
 
@@ -66,4 +68,6 @@ public interface Application {
     void disconnectAll();
 
     java.util.Timer getTimer();
+    
+    void reloadGUI();
 }
