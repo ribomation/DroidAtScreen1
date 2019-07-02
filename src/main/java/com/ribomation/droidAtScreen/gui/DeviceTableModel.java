@@ -1,8 +1,11 @@
 package com.ribomation.droidAtScreen.gui;
 
+import com.ribomation.droidAtScreen.Language;
+import com.ribomation.droidAtScreen.Settings;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.prefs.Preferences;
 
 import javax.swing.table.AbstractTableModel;
 
@@ -23,9 +26,13 @@ public class DeviceTableModel extends AbstractTableModel {
 
     private final List<DeviceFrame> devices = new ArrayList<>();
     private final Logger log;
+    Preferences applicationPreferences;
+    Language language;
 
     public DeviceTableModel() {
         log = Logger.getLogger(this.getClass());
+        this.applicationPreferences = Preferences.userNodeForPackage(Settings.class);
+        loadLanguage();
     }
 
     /**
@@ -51,15 +58,15 @@ public class DeviceTableModel extends AbstractTableModel {
     public String getColumnName(int col) {
         switch (col) {
             case NAME:
-                return "Name";
+                return getString("name");
             case TYPE:
-                return "Type";
+                return getString("type");
             case SERNO:
-                return "Serial No.";
+                return getString("serial_no");
             case STATE:
-                return "State";
+                return getString("state");
             case SHOW:
-                return "Visible";
+                return getString("visible");
         }
         return "";
     }
@@ -103,10 +110,7 @@ public class DeviceTableModel extends AbstractTableModel {
 
     @Override
     public boolean isCellEditable(int row, int col) {
-        if (col == SHOW) {
-            return true;
-        }
-        return false;
+        return col == SHOW;
     }
 
     @Override
@@ -164,5 +168,15 @@ public class DeviceTableModel extends AbstractTableModel {
             }
         }
         return null;
+    }
+
+    private void loadLanguage() {
+        String lang = applicationPreferences.get("language", "english");
+        language = new Language(lang);
+
+    }
+
+    private String getString(String keyLabel) {
+        return language.getProperty(keyLabel);
     }
 }

@@ -38,7 +38,7 @@ public class HideEmulatorsCommand extends CheckBoxCommand {
     }
 
     private void configure() {
-        setLabel("Hide Emulators");
-        setTooltip("Do not show emulators automatically");
+        setLabel(getString("hide_emulators"));
+        setTooltip(getString("hide_emulators_tooltip"));
     }
 }

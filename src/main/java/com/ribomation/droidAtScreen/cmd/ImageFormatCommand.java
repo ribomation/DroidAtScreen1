@@ -28,13 +28,17 @@ public class ImageFormatCommand extends Command {
     }
 
     protected void updateView(String imgFmt) {
-        setLabel(String.format("Image Format (%s)", imgFmt));
+        setLabel(String.format(getString("image_format"), imgFmt));
     }
 
     @Override
     protected void doExecute(Application app) {
         String[] formats = app.getSettings().getImageFormats();
-        int rc = JOptionPane.showOptionDialog(app.getAppFrame(), "Image Formats", "Set default image format", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, formats, app.getSettings().getImageFormat());
+        int rc = JOptionPane.showOptionDialog(app.getAppFrame(), 
+                getString("image_format_message"),
+                getString("image_format_title"),
+                JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, 
+                null, formats, app.getSettings().getImageFormat());
 
         if (0 <= rc && rc < formats.length) {
             app.getSettings().setImageFormat(formats[rc]);
@@ -46,6 +50,6 @@ public class ImageFormatCommand extends Command {
         updateView(getApplication().getSettings().getImageFormat());
         setIcon("imgfmt");
         setMnemonic('F');
-        setTooltip("Set the default image-format when saving screen-shots.");
+        setTooltip(getString("image_format_tooltip"));
     }
 }

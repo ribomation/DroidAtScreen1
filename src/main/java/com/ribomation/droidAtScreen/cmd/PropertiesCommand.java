@@ -46,13 +46,13 @@ public class PropertiesCommand extends CommandWithTarget<DeviceFrame> {
     @Override
     protected void updateButton(DeviceFrame target) {
         setIcon("list");
-        setTooltip("Shows all device properties");
+        setTooltip(getString("properties_tooltip"));
     }
 
     @Override
     protected void doExecute(Application app, DeviceFrame target) {
         Map<String, String> properties = target.getDevice().getProperties();
-        final String toolTipText = "Click on a row to view the complete property value";
+        final String toolTipText = getString("device_properties_tooltip");
 
         PropertiesModel model = new PropertiesModel(properties);
         JTable tbl = new JTable(model) {
@@ -70,7 +70,8 @@ public class PropertiesCommand extends CommandWithTarget<DeviceFrame> {
         tbl.setPreferredScrollableViewportSize(new Dimension(400, 200));
 
         JScrollPane pane = new JScrollPane(tbl);
-        JOptionPane.showMessageDialog(app.getAppFrame(), pane, "Device Properties", JOptionPane.PLAIN_MESSAGE);
+        JOptionPane.showMessageDialog(app.getAppFrame(), pane,
+                getString("device_properties"), JOptionPane.PLAIN_MESSAGE);
     }
 
     private void configure(DeviceFrame deviceFrame) {
@@ -79,14 +80,16 @@ public class PropertiesCommand extends CommandWithTarget<DeviceFrame> {
 
     class PropertiesModel extends AbstractTableModel implements ListSelectionListener {
 
-        private List<String> names = new ArrayList<String>();
-        private List<String> values = new ArrayList<String>();
+        private final List<String> names = new ArrayList<>();
+        private final List<String> values = new ArrayList<>();
 
         PropertiesModel(Map<String, String> properties) {
-            for (String name : new TreeSet<String>(properties.keySet())) {
+            new TreeSet<>(properties.keySet()).stream().map((name) -> {
                 names.add(name);
+                return name;
+            }).forEachOrdered((name) -> {
                 values.add(properties.get(name));
-            }
+            });
         }
 
         @Override
@@ -124,10 +127,10 @@ public class PropertiesCommand extends CommandWithTarget<DeviceFrame> {
         @Override
         public String getColumnName(int col) {
             if (col == 0) {
-                return "Name";
+                return getString("name");
             }
             if (col == 1) {
-                return "Value";
+                return getString("value");
             }
             return "";
         }

@@ -38,8 +38,9 @@ public class OrientationCommand extends CommandWithTarget<DeviceFrame> {
 
     @Override
     protected void updateButton(DeviceFrame deviceFrame) {
-        String orientation = deviceFrame.isLandscapeMode() ? "Landscape" : "Portrait ";
-        setTooltip(String.format("Flip the orientation (%s)", orientation));
+        String orientation = deviceFrame.isLandscapeMode()
+                ? "landscape" : "portrait";
+        setTooltip(String.format(getString("orientation_tooltip"), getString(orientation)));
         setIcon("orientation-" + orientation.toLowerCase().trim());
     }
 

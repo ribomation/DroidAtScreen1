@@ -53,7 +53,7 @@ public class DroidAtScreenApplication implements Application, AndroidDeviceListe
     private Settings settings;
     private Language language;
     private Properties appProperties;
-    private final DeviceTableModel deviceTableModel = new DeviceTableModel();
+    private DeviceTableModel deviceTableModel = new DeviceTableModel();
     private Timer timer;
 
     public static void main(String[] args) {
@@ -135,7 +135,10 @@ public class DroidAtScreenApplication implements Application, AndroidDeviceListe
     public void reloadGUI() {
         log.debug("reloadGUI");
         initProperties();
+        initCommands();
+        Command.resetComans();
         appFrame.dispose();
+        deviceTableModel = new DeviceTableModel();
         appFrame = new ApplicationFrame(this);
         appFrame.initGUI();
         run();

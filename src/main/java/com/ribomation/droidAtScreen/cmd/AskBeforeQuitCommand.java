@@ -34,7 +34,7 @@ public class AskBeforeQuitCommand extends CheckBoxCommand {
     }
 
     private void configure() {
-        setLabel("Ask Before Quit");
-        setTooltip("If you want a prompt before quitting.");
+        setLabel(getString("ask_before_quit"));
+        setTooltip(getString("ask_before_quit_tooltip"));
     }
 }

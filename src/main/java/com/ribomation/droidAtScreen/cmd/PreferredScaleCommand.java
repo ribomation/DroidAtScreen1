@@ -31,19 +31,22 @@ import com.ribomation.droidAtScreen.Application;
  */
 public class PreferredScaleCommand extends Command {
 
-    private static final int vMarg = 2, hMarg = 4, lblHt = 26, minScale = 0, maxScale = 300, tick = 10;
+    private static final int vMarg = 2, hMarg = 4, lblHt = 26, minScale = 0, 
+            maxScale = 300, tick = 10;
 
     protected PreferredScaleCommand() {
         configure();
     }
 
     private void updateButton(int value) {
-        setLabel(String.format("Preferred Scale (%d%%)", value));
+        setLabel(String.format(getString("preferred_scale"), value));
     }
 
     @Override
     protected void doExecute(final Application app) {
-        final JDialog dlg = createScaleDialog(app, app.getSettings().getPreferredScale(), new OnScaleUpdatedListener() {
+        final JDialog dlg = createScaleDialog(app, 
+                app.getSettings().getPreferredScale(), 
+                new OnScaleUpdatedListener() {
             @Override
             public void onScaleUpdated(int value) {
                 app.getSettings().setPreferredScale(value);
@@ -63,7 +66,7 @@ public class PreferredScaleCommand extends Command {
         updateButton(getApplication().getSettings().getPreferredScale());
         setIcon("scale");
         setMnemonic('S');
-        setTooltip("Set the preferred scale of new devices");
+        setTooltip("");
     }
 
     public interface OnScaleUpdatedListener {
@@ -73,8 +76,10 @@ public class PreferredScaleCommand extends Command {
         void onFinishScaleUpdated(int value);
     }
 
-    public static JDialog createScaleDialog(Application app, int currentValue, final OnScaleUpdatedListener action) {
-        final JSlider scaleSlider = new JSlider(SwingConstants.VERTICAL, minScale, maxScale, currentValue);
+    public static JDialog createScaleDialog(Application app, int currentValue, 
+            final OnScaleUpdatedListener action) {
+        final JSlider scaleSlider = new JSlider(SwingConstants.VERTICAL, 
+                minScale, maxScale, currentValue);
         Hashtable labels = scaleSlider.createStandardLabels(tick);
         for (Object key : labels.keySet()) {
             JLabel lbl = ((JLabel) labels.get(key));
@@ -85,7 +90,9 @@ public class PreferredScaleCommand extends Command {
         scaleSlider.setMajorTickSpacing(tick);
         scaleSlider.setPaintLabels(true);
         scaleSlider.setLabelTable(labels);
-        scaleSlider.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createEmptyBorder(vMarg, hMarg, vMarg, 2 * hMarg), BorderFactory.createTitledBorder("Scale")));
+        scaleSlider.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createEmptyBorder(vMarg, hMarg, vMarg, 2 * hMarg), 
+                BorderFactory.createTitledBorder("Scale")));
 
         final JDialog dlg = new JDialog(app.getAppFrame(), true);
         dlg.add(scaleSlider);
@@ -106,5 +113,4 @@ public class PreferredScaleCommand extends Command {
 
         return dlg;
     }
-
 }

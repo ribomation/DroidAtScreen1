@@ -34,7 +34,7 @@ public class AskBeforeScreenshotCommand extends CheckBoxCommand {
     }
 
     private void configure() {
-        setLabel("Ask Before Screenshot");
-        setTooltip("If you want to specify the filename before a screenshot, else it's generated.");
+        setLabel(getString("ask_before_screenshot"));
+        setTooltip(getString("ask_before_screenshot_tooltip"));
     }
 }

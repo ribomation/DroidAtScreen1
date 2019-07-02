@@ -31,7 +31,8 @@ public class ImageDirectoryCommand extends Command {
     }
 
     protected void updateView(File imageDirectory) {
-        setTooltip(String.format("Directory when saving screen-shots (%s)", imageDirectory.getName()));
+        setTooltip(String.format(getString("image_dir_describe"), 
+                imageDirectory.getName()));
     }
 
     @Override
@@ -56,7 +57,7 @@ public class ImageDirectoryCommand extends Command {
     }
 
     private void configure() {
-        setLabel("Image Dir");
+        setLabel(getString("image_dir"));
         setIcon("imgfolder");
         setMnemonic('D');
         updateView(getApplication().getSettings().getImageDirectory());

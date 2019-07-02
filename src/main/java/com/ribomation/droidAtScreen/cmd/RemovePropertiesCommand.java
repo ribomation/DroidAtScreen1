@@ -29,15 +29,18 @@ public class RemovePropertiesCommand extends Command {
 
     @Override
     protected void doExecute(Application app) {
-        int rc = JOptionPane.showConfirmDialog(app.getAppFrame(), "Are you sure you want to remove all persisted properties of this application from this host?", "Remove app properties?", JOptionPane.YES_NO_OPTION);
+        int rc = JOptionPane.showConfirmDialog(app.getAppFrame(),
+                getString("remove_properties_question"),
+                getString("remove_properties_question_title"), 
+                JOptionPane.YES_NO_OPTION);
         if (rc == JOptionPane.YES_OPTION) {
             app.getSettings().destroyPreferences();
         }
     }
 
     private void configure() {
-        setLabel("Remove application properties");
-        setTooltip("Removes all saved application properties from this host.");
+        setLabel(getString("remove_properties"));
+        setTooltip(getString("remove_properties_tooltip"));
         setIcon("remove");
     }
 }

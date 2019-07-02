@@ -31,20 +31,20 @@ public class AdbRestartCommand extends Command {
     @Override
     protected void doExecute(final Application app) {
         final StatusBar statusBar = app.getAppFrame().getStatusBar();
-        statusBar.message("Restarting ADB...");
+        statusBar.message(getString("restar_adb_statusbar_loading"));
 
         SwingUtilities.invokeLater(() -> {
             app.disconnectAll();
             boolean succeeded = app.getDeviceManager().restartADB();
-            statusBar.message("ADB restart " + (succeeded ? "succeeded" : "failed"));
+            statusBar.message(getString("restar_adb_statusbar_done") + (succeeded ? 
+                    getString("succeeded") : getString("failed")));
         });
     }
 
     private void configure() {
-        setLabel("Restart ADB");
+        setLabel(getString("restar_adb"));
         setIcon("sync");
         setMnemonic('R');
-        setTooltip("Tries to restart the ADB server. Unplug your device(s) first.");
+        setTooltip(getString("restar_adb_tooltip"));
     }
-
 }

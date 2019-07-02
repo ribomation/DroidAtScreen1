@@ -40,8 +40,8 @@ public class HelpCommand extends CommandWithURI {
     }
 
     private void configure() {
-        setLabel("Help");
-        setTooltip("Views the help text for Droid@Screen");
+        setLabel(getString("help"));
+        setTooltip(getString("help_tooltip"));
         setIcon("help");
         setMnemonic('H');
     }

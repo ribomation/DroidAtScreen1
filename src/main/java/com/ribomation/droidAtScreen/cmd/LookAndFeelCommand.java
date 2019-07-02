@@ -75,8 +75,8 @@ public class LookAndFeelCommand extends Command {
     }
 
     private void configure() {
-        setLabel("Set Look&Feel");
-        setTooltip("Let you choose which Look&Feel to use.");
+        setLabel(getString("look_and_feel"));
+        setTooltip(getString("look_and_feel_tooltip"));
         setIcon("lookandfeel");
     }
 }

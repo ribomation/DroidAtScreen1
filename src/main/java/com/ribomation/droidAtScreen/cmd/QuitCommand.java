@@ -45,15 +45,15 @@ public class QuitCommand extends Command {
 
     private boolean askUser(Application app) {
         int rc = JOptionPane.showConfirmDialog(app.getAppFrame(),
-                app.getLanguage().getProperty("quit_question"), 
-                app.getLanguage().getProperty("quit_question_title"), 
+                getString("quit_question"),
+                getString("quit_question_title"),
                 JOptionPane.OK_CANCEL_OPTION);
         return rc == JOptionPane.OK_OPTION;
     }
 
     private void configure() {
-        setLabel("quit");
-        setTooltip("quit_tooltip");
+        setLabel(getString("quit"));
+        setTooltip(getString("quit_tooltip"));
         setIcon("exit");
         setMnemonic('Q');
     }

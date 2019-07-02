@@ -131,6 +131,6 @@ public class RecordingCommand extends CommandWithTarget<DeviceFrame> implements 
 
     private void configure() {
         setIcon("record");
-        setTooltip("Continuously record screen-shots and save them to a directory, for further processing.");
+        setTooltip(getString("recording"));
     }
 }

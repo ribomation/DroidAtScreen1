@@ -47,8 +47,8 @@ public class ChangeLanguageCommand extends Command {
     }
 
     private void configure() {
-        setLabel("set_language");
-        setTooltip("set_language_tooltip");
+        setLabel(getString("set_language"));
+        setTooltip(getString("set_language_tooltip"));
         setIcon("language");
     }
 }

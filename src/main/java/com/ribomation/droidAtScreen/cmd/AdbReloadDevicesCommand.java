@@ -32,14 +32,15 @@ public class AdbReloadDevicesCommand extends Command {
         SwingUtilities.invokeLater(() -> {
             app.disconnectAll();
             app.getDeviceManager().reloadDevices();
-            app.getAppFrame().getStatusBar().message("Android devices reloaded");
+            app.getAppFrame().getStatusBar()
+                    .message(getString("android_devices_reloaded"));
         });
     }
 
     private void configure() {
-        setLabel("reload_devices");
+        setLabel(getString("reload_devices"));
         setIcon("diagram");
         setMnemonic('L');
-        setTooltip("reload_devices_tooltip");
+        setTooltip(getString("reload_devices_tooltip"));
     }
 }

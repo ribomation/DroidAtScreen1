@@ -66,7 +66,10 @@ public class ApplicationFrame extends JFrame {
         } catch (ClassNotFoundException | IllegalAccessException | InstantiationException | UnsupportedLookAndFeelException e) {
         }
         setIconImage(GuiUtil.loadIcon("device").getImage());
-        setTitle(app.getInfo().getName() + ", Version " + app.getInfo().getVersion());
+        setTitle(app.getInfo().getName()
+                + ", "
+                + app.getLanguage().getProperty("version")
+                + " " + app.getInfo().getVersion());
         setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
             @Override

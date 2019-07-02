@@ -30,7 +30,8 @@ public class ScaleCommand extends CommandWithTarget<DeviceFrame> {
 
     @Override
     protected void doExecute(final Application app, final DeviceFrame deviceFrame) {
-        final JDialog dlg = PreferredScaleCommand.createScaleDialog(app, deviceFrame.getScale(),
+        final JDialog dlg = PreferredScaleCommand.createScaleDialog(app, 
+                deviceFrame.getScale(),
                 new PreferredScaleCommand.OnScaleUpdatedListener() {
             @Override
             public void onScaleUpdated(int value) {
@@ -55,7 +56,7 @@ public class ScaleCommand extends CommandWithTarget<DeviceFrame> {
 
     @Override
     protected void updateButton(DeviceFrame deviceFrame) {
-        setTooltip(String.format("Current scale (%d%%)", deviceFrame.getScale()));
+        setTooltip(String.format(getString("scale"), deviceFrame.getScale()));
     }
 
     private void configure(DeviceFrame deviceFrame) {

@@ -33,7 +33,6 @@ import javax.swing.SwingConstants;
 import org.apache.log4j.Logger;
 
 import com.ribomation.droidAtScreen.Application;
-import com.ribomation.droidAtScreen.Language;
 import com.ribomation.droidAtScreen.dev.AndroidDevice;
 import com.ribomation.droidAtScreen.dev.AndroidDeviceListener;
 import com.ribomation.droidAtScreen.gui.GuiUtil;
@@ -132,16 +131,16 @@ public abstract class Command extends AbstractAction implements AndroidDeviceLis
         return (String) getValue(Action.NAME);
     }
 
-    protected void setLabel(String keyLabel) {
-        putValue(Action.NAME, getApplication().getLanguage().getProperty(keyLabel));
+    protected void setLabel(String label) {
+        putValue(Action.NAME, label);
     }
 
     public String getTooltip() {
         return (String) getValue(Action.SHORT_DESCRIPTION);
     }
 
-    protected void setTooltip(String keyLabel) {
-        putValue(Action.SHORT_DESCRIPTION, getApplication().getLanguage().getProperty(keyLabel));
+    protected void setTooltip(String label) {
+        putValue(Action.SHORT_DESCRIPTION, label);
     }
 
     public Icon getIcon() {
@@ -290,5 +289,13 @@ public abstract class Command extends AbstractAction implements AndroidDeviceLis
         private void configure(String name) {
             setLabel(name);
         }
+    }
+
+    protected String getString(String keyLabel) {
+        return getApplication().getLanguage().getProperty(keyLabel);
+    }
+    
+    public static void resetComans() {
+        cmds = new HashMap<>();;
     }
 }

@@ -50,13 +50,13 @@ public class AboutCommand extends Command {
         JOptionPane.showMessageDialog(null, content,
                 info.getVersion()
                 + info.getName() + " - "
-                + getApplication().getLanguage().getProperty("version"),
+                + getString("version"),
                 JOptionPane.PLAIN_MESSAGE);
     }
 
     private void configure() {
-        setLabel("about");
-        setTooltip("about_tootltip");
+        setLabel(getString("about"));
+        setTooltip(getString("about_tootltip"));
         setIcon("about");
         setMnemonic('A');
     }

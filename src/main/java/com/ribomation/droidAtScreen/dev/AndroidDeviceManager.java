@@ -29,9 +29,9 @@ import com.ribomation.droidAtScreen.Application;
  */
 public class AndroidDeviceManager extends Thread implements AndroidDebugBridge.IDeviceChangeListener, AndroidDebugBridge.IDebugBridgeChangeListener {
 
-    private Logger log = Logger.getLogger(this.getClass());
+    private final Logger log = Logger.getLogger(this.getClass());
     private File adbExecutable;
-    private Application app;
+    private final Application app;
 
     public AndroidDeviceManager(Application app) {
         this.app = app;
@@ -150,5 +150,4 @@ public class AndroidDeviceManager extends Thread implements AndroidDebugBridge.I
         }
         return result.toString();
     }
-
 }

@@ -40,8 +40,8 @@ public class MailCommand extends CommandWithURI {
     }
 
     private void configure() {
-        setLabel("Mail");
-        setTooltip("Send a feedback mail to the developer");
+        setLabel(getString("mail"));
+        setTooltip(getString("mail_tooltip"));
         setIcon("mail");
         setMnemonic('M');
     }

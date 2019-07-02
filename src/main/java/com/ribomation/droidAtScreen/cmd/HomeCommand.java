@@ -40,8 +40,8 @@ public class HomeCommand extends CommandWithURI {
     }
 
     private void configure() {
-        setLabel("Home");
-        setTooltip("Views the web page for Droid@Screen");
+        setLabel(getString("home"));
+        setTooltip(getString("home_tooltip"));
         setIcon("home");
         setMnemonic('O');
     }

@@ -40,13 +40,17 @@ public class AdbExePathCommand extends Command {
 
     @Override
     protected void doExecute(Application app) {
-        JOptionPane.showMessageDialog(app.getAppFrame(), createPane(), "ADB Executable", JOptionPane.QUESTION_MESSAGE);
+        JOptionPane.showMessageDialog(app.getAppFrame(),
+                createPane(),
+                getString("adb_executable"),
+                JOptionPane.QUESTION_MESSAGE);
     }
 
     @Override
     public JPanel createPane() {
         JPanel pane = new JPanel(new BorderLayout(0, 5));
-        pane.setBorder(BorderFactory.createTitledBorder("Path to ADB Executable"));
+        pane.setBorder(
+                BorderFactory.createTitledBorder(getString("adb_exe_path_title")));
 
         pane.add(createInfoPane(), BorderLayout.CENTER);
         pane.add(createPathPane(), BorderLayout.SOUTH);
@@ -99,10 +103,10 @@ public class AdbExePathCommand extends Command {
         JLabel txt = new JLabel(loadResource("/adb-exe-info.html"));
         return txt;
     }
-    
+
     private void configure() {
-        setLabel("adb_exe_path");
-        setTooltip("adb_exe_path_tooltip");
+        setLabel(getString("adb_exe_path"));
+        setTooltip(getString("adb_exe_path_tooltip"));
         setIcon("app");
     }
 }

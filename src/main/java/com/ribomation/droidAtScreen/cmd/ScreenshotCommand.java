@@ -71,10 +71,16 @@ public class ScreenshotCommand extends CommandWithTarget<DeviceFrame> {
         public void run() {
             try {
                 ImageIO.write(image.toBufferedImage(), extractFormat(app, file), file);
-                app.getAppFrame().getStatusBar().message("Written %s", file.getName());
-                getLog().info(String.format("Screenshot file: %s", file.getAbsolutePath()));
+                app.getAppFrame().getStatusBar().message(
+                        getString("screenshot_message_loading"),
+                        file.getName());
+                getLog().info(String.format("Screenshot file: %s",
+                        file.getAbsolutePath()));
             } catch (IOException e) {
-                JOptionPane.showMessageDialog(app.getAppFrame(), String.format("Failed to save '%s': %s", file, e.getMessage()), "Failure", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(app.getAppFrame(),
+                        String.format(getString("screenshot_message_failed"),
+                                file, e.getMessage()), "Failure",
+                        JOptionPane.ERROR_MESSAGE);
             }
         }
     }
@@ -117,11 +123,11 @@ public class ScreenshotCommand extends CommandWithTarget<DeviceFrame> {
         if (Arrays.asList(formats).contains(ext)) {
             return ext;
         }
-        throw new RuntimeException("Invalid extension: " + f);
+        throw new RuntimeException(String.format(getString("invalid_extension"), f));
     }
 
     private void configure() {
         setIcon("camera");
-        setTooltip("Takes a screen-shot and saves it to a file");
+        setTooltip(getString("screenshot_tooltip"));
     }
 }
