@@ -11,6 +11,7 @@
  */
 package com.ribomation.droidAtScreen.cmd;
 
+import com.bulenkov.darcula.DarculaLaf;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -19,7 +20,10 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
 import com.ribomation.droidAtScreen.Application;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.plaf.basic.BasicLookAndFeel;
 
 /**
  * Prompts the user for a Look&Feel to set for the UI.
@@ -35,25 +39,28 @@ public class LookAndFeelCommand extends Command {
 
     @Override
     protected void doExecute(final Application app) {
-        final String lafName = (String) JOptionPane.showInputDialog(app.getAppFrame(), "Choose a Look&Feel", "Look&Feel", JOptionPane.QUESTION_MESSAGE, null, toNames(UIManager.getInstalledLookAndFeels()), UIManager.getLookAndFeel().getName());
+        final String lafName = (String) JOptionPane.showInputDialog(
+                app.getAppFrame(),
+                "Choose a Look&Feel",
+                "Look&Feel",
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                toNames(UIManager.getInstalledLookAndFeels()),
+                UIManager.getLookAndFeel().getName());
         if (lafName == null) {
             return;
         }
 
         SwingUtilities.invokeLater(() -> {
-            try {
-                UIManager.setLookAndFeel(findClassName(lafName));
-                SwingUtilities.updateComponentTreeUI(app.getAppFrame());
-                app.getAppFrame().pack();
-                
-                app.getDevices().stream().map((frame) -> {
-                    SwingUtilities.updateComponentTreeUI(frame);
-                    return frame;
-                }).forEachOrdered((frame) -> {
-                    frame.pack();
-                });
-            } catch (ClassNotFoundException | IllegalAccessException | InstantiationException | UnsupportedLookAndFeelException e) {
-            }
+            setLookAndFeel(lafName);
+            SwingUtilities.updateComponentTreeUI(app.getAppFrame());
+            app.getAppFrame().pack();
+            app.getDevices().stream().map((frame) -> {
+                SwingUtilities.updateComponentTreeUI(frame);
+                return frame;
+            }).forEachOrdered((frame) -> {
+                frame.pack();
+            });
         });
     }
 
@@ -62,6 +69,8 @@ public class LookAndFeelCommand extends Command {
         for (UIManager.LookAndFeelInfo i : info) {
             names.add(i.getName());
         }
+
+        names.add("Darcula");
         return names.toArray(new String[names.size()]);
     }
 
@@ -78,5 +87,19 @@ public class LookAndFeelCommand extends Command {
         setLabel(getString("look_and_feel"));
         setTooltip(getString("look_and_feel_tooltip"));
         setIcon("lookandfeel");
+    }
+
+    protected void setLookAndFeel(String lafName) {
+        try {
+            BasicLookAndFeel darcula = new DarculaLaf();
+            if (lafName.equals("Darcula")) {
+                UIManager.setLookAndFeel(darcula);
+            } else {
+                UIManager.setLookAndFeel(findClassName(lafName));
+            }
+        } catch (ClassNotFoundException | InstantiationException |
+                IllegalAccessException | UnsupportedLookAndFeelException ex) {
+            Logger.getLogger(LookAndFeelCommand.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }
