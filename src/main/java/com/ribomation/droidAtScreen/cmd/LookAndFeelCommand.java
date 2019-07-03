@@ -40,12 +40,11 @@ public class LookAndFeelCommand extends Command {
     @Override
     protected void doExecute(final Application app) {
         final String lafName = (String) JOptionPane.showInputDialog(
-                app.getAppFrame(),
-                "Choose a Look&Feel",
-                "Look&Feel",
-                JOptionPane.QUESTION_MESSAGE,
-                null,
-                toNames(UIManager.getInstalledLookAndFeels()),
+                app.getAppFrame(), 
+                getString("look_and_feel_question"), 
+                getString("look_and_feel"), 
+                JOptionPane.QUESTION_MESSAGE, null, 
+                toNames(UIManager.getInstalledLookAndFeels()), 
                 UIManager.getLookAndFeel().getName());
         if (lafName == null) {
             return;
