@@ -9,17 +9,17 @@
  * You are free to use this software and the source code as you like.
  * We do appreciate if you attribute were it came from.
  */
-
 package com.ribomation.droidAtScreen.gui;
 
 import com.ribomation.droidAtScreen.dev.ScreenImage;
 
 /**
  * DESCRIPTION
- * 
+ *
  * @user jens
  * @date 2011-10-04 15:16
  */
 public interface RecordingListener {
-	void record(ScreenImage image);
+
+    void record(ScreenImage image);
 }

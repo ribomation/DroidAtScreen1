@@ -9,7 +9,6 @@
  * You are free to use this software and the source code as you like.
  * We do appreciate if you attribute were it came from.
  */
-
 package com.ribomation.droidAtScreen.cmd;
 
 import java.awt.Desktop;
@@ -20,27 +19,30 @@ import com.ribomation.droidAtScreen.Application;
 
 /**
  * Shows the help text.
- * 
+ *
  * @user Jens
  * @date 2012-04-11, 00:00
  */
 public class HomeCommand extends CommandWithURI {
 
-	public HomeCommand() {
-		setLabel("Home");
-		setTooltip("Views the web page for Droid@Screen");
-		setIcon("home");
-		setMnemonic('O');
-	}
+    public HomeCommand() {
+        configure();
+    }
 
-	@Override
-	protected Desktop.Action getType() {
-		return Desktop.Action.BROWSE;
-	}
+    @Override
+    protected Desktop.Action getType() {
+        return Desktop.Action.BROWSE;
+    }
 
-	@Override
-	protected URI getURI(Application app) throws URISyntaxException {
-		return new URI(app.getInfo().getAppUri());
-	}
+    @Override
+    protected URI getURI(Application app) throws URISyntaxException {
+        return new URI(app.getInfo().getAppUri());
+    }
 
+    private void configure() {
+        setLabel(getString("home"));
+        setTooltip(getString("home_tooltip"));
+        setIcon("home");
+        setMnemonic('O');
+    }
 }

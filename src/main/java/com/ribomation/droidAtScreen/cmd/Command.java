@@ -9,7 +9,6 @@
  * You are free to use this software and the source code as you like.
  * We do appreciate if you attribute were it came from.
  */
-
 package com.ribomation.droidAtScreen.cmd;
 
 import java.awt.event.ActionEvent;
@@ -37,249 +36,266 @@ import com.ribomation.droidAtScreen.Application;
 import com.ribomation.droidAtScreen.dev.AndroidDevice;
 import com.ribomation.droidAtScreen.dev.AndroidDeviceListener;
 import com.ribomation.droidAtScreen.gui.GuiUtil;
+import java.io.IOException;
 
 /**
  * Base class of all app commands.
- * 
+ *
  * @user jens
  * @date 2010-jan-18 09:59:01
  */
 public abstract class Command extends AbstractAction implements AndroidDeviceListener {
-	private Logger log;
-	private static Application application;
-	private static Map<String, Command> cmds = new HashMap<String, Command>();
-	private String name;
-	private boolean enabledOnlyWithDevice = false;
 
-	{
-		log = Logger.getLogger(this.getClass());
-		getApplication().addAndroidDeviceListener(this);
-	}
+    private Logger log;
+    private static Application application;
+    private static Map<String, Command> cmds = new HashMap<String, Command>();
+    private String name;
+    private boolean enabledOnlyWithDevice = false;
 
-	protected Command() {
-		this.name = extractName();
-		cmds.put(this.getName(), this);
-	}
+    {
+        log = Logger.getLogger(this.getClass());
+        getApplication().addAndroidDeviceListener(this);
+    }
 
-	protected Command(String name) {
-		this.name = name;
-		cmds.put(this.getName(), this);
-	}
+    protected Command() {
+        this.name = extractName();
+        cmds.put(this.getName(), this);
+    }
 
-	public boolean isEnabledOnlyWithDevice() {
-		return enabledOnlyWithDevice;
-	}
+    protected Command(String name) {
+        this.name = name;
+        cmds.put(this.getName(), this);
+    }
 
-	public void setEnabledOnlyWithDevice(boolean enabledOnlyWithDevice) {
-		this.enabledOnlyWithDevice = enabledOnlyWithDevice;
-		//        setEnabled(!enabledOnlyWithDevice);
-	}
+    public boolean isEnabledOnlyWithDevice() {
+        return enabledOnlyWithDevice;
+    }
 
-	@Override
-	public void connected(AndroidDevice dev) {
-	}
+    public void setEnabledOnlyWithDevice(boolean enabledOnlyWithDevice) {
+        this.enabledOnlyWithDevice = enabledOnlyWithDevice;
+        //        setEnabled(!enabledOnlyWithDevice);
+    }
 
-	@Override
-	public void disconnected(AndroidDevice dev) {
-	}
+    @Override
+    public void connected(AndroidDevice dev) {
+    }
 
-	protected abstract void doExecute(Application app);
+    @Override
+    public void disconnected(AndroidDevice dev) {
+    }
 
-	public void execute() {
-		try {
-			doExecute(getApplication());
-		} catch (Exception e) {
-			getLog().error("Failed to execute command " + getName(), e);
+    protected abstract void doExecute(Application app);
 
-			JOptionPane.showMessageDialog(null, "Failed to execute command " + getName() + ": " + e, "Application Error", JOptionPane.ERROR_MESSAGE);
-		}
-	}
+    public void execute() {
+        try {
+            doExecute(getApplication());
+        } catch (Exception e) {
+            getLog().error("Failed to execute command " + getName(), e);
 
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		execute();
-	}
+            JOptionPane.showMessageDialog(null, "Failed to execute command " + getName() + ": " + e, "Application Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
 
-	@SuppressWarnings("unchecked")
-	public static <CmdType extends Command> CmdType find(Class<? extends Command> cmdCls) {
-		String name = extractName(cmdCls);
-		return (CmdType) get(name);
-	}
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        execute();
+    }
 
-	public static Command get(String name) {
-		Command c = cmds.get(name.toLowerCase());
-		if (c != null)
-			return c;
-		return loadCommand(name);
-	}
+    @SuppressWarnings("unchecked")
+    public static <CmdType extends Command> CmdType find(Class<? extends Command> cmdCls) {
+        String name = extractName(cmdCls);
+        return (CmdType) get(name);
+    }
 
-	protected static Map<String, Command> getCmds() {
-		return cmds;
-	}
+    public static Command get(String name) {
+        Command c = cmds.get(name.toLowerCase());
+        if (c != null) {
+            return c;
+        }
+        return loadCommand(name);
+    }
 
-	protected Logger getLog() {
-		return log;
-	}
+    protected static Map<String, Command> getCmds() {
+        return cmds;
+    }
 
-	public String getName() {
-		return name;
-	}
+    protected Logger getLog() {
+        return log;
+    }
 
-	public String getLabel() {
-		return (String) getValue(Action.NAME);
-	}
+    public String getName() {
+        return name;
+    }
 
-	protected void setLabel(String label) {
-		putValue(Action.NAME, label);
-	}
+    public String getLabel() {
+        return (String) getValue(Action.NAME);
+    }
 
-	public String getTooltip() {
-		return (String) getValue(Action.SHORT_DESCRIPTION);
-	}
+    protected void setLabel(String label) {
+        putValue(Action.NAME, label);
+    }
 
-	protected void setTooltip(String label) {
-		putValue(Action.SHORT_DESCRIPTION, label);
-	}
+    public String getTooltip() {
+        return (String) getValue(Action.SHORT_DESCRIPTION);
+    }
 
-	public Icon getIcon() {
-		return (Icon) getValue(Action.SMALL_ICON);
-	}
+    protected void setTooltip(String label) {
+        putValue(Action.SHORT_DESCRIPTION, label);
+    }
 
-	protected void setIcon(Icon ico) {
-		putValue(Action.SMALL_ICON, ico);
-		putValue(Action.LARGE_ICON_KEY, ico);
-	}
+    public Icon getIcon() {
+        return (Icon) getValue(Action.SMALL_ICON);
+    }
 
-	protected void setIcon(String icoName) {
-		setIcon(GuiUtil.loadIcon(icoName));
-	}
+    protected void setIcon(Icon ico) {
+        putValue(Action.SMALL_ICON, ico);
+        putValue(Action.LARGE_ICON_KEY, ico);
+    }
 
-	public String getAccelerator() {
-		return (String) getValue(Action.ACCELERATOR_KEY);
-	}
+    protected void setIcon(String icoName) {
+        setIcon(GuiUtil.loadIcon(icoName));
+    }
 
-	protected void setAccelerator(String key) {
-		putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(key));
-	}
+    public String getAccelerator() {
+        return (String) getValue(Action.ACCELERATOR_KEY);
+    }
 
-	public int getMnemonic() {
-		return (Integer) getValue(Action.MNEMONIC_KEY);
-	}
+    protected void setAccelerator(String key) {
+        putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(key));
+    }
 
-	protected void setMnemonic(char ch) {
-		putValue(Action.MNEMONIC_KEY, new Integer(ch));
-	}
+    public int getMnemonic() {
+        return (Integer) getValue(Action.MNEMONIC_KEY);
+    }
 
-	public JMenuItem createMenuItem() {
-		JMenuItem mi = newMenuItem();
-		mi.setAction(this);
-		return mi;
-	}
+    protected void setMnemonic(char ch) {
+        putValue(Action.MNEMONIC_KEY, new Integer(ch));
+    }
 
-	protected JMenuItem newMenuItem() {
-		return new JMenuItem();
-	}
+    public JMenuItem createMenuItem() {
+        JMenuItem mi = newMenuItem();
+        mi.setAction(this);
+        return mi;
+    }
 
-	public AbstractButton createButton() {
-		AbstractButton b = newButton();
-		b.setAction(this);
-		return b;
-	}
+    protected JMenuItem newMenuItem() {
+        return new JMenuItem();
+    }
 
-	protected AbstractButton newButton() {
-		JButton b = new JButton();
-		b.setVerticalTextPosition(SwingConstants.BOTTOM);
-		b.setHorizontalTextPosition(SwingConstants.CENTER);
-		return b;
-	}
+    public AbstractButton createButton() {
+        AbstractButton b = newButton();
+        b.setAction(this);
+        return b;
+    }
 
-	public JPanel createPane() {
-		JPanel p = new JPanel();
-		p.add(new JLabel("Empty/Dummy Pane"));
-		return p;
-	}
+    protected AbstractButton newButton() {
+        JButton b = new JButton();
+        b.setVerticalTextPosition(SwingConstants.BOTTOM);
+        b.setHorizontalTextPosition(SwingConstants.CENTER);
+        return b;
+    }
 
-	protected Application getApplication() {
-		if (application == null) {
-			throw new IllegalStateException("Missing application ref. Must invoke Command.setApplication(...) before use.");
-		}
-		return application;
-	}
+    public JPanel createPane() {
+        JPanel p = new JPanel();
+        p.add(new JLabel("Empty/Dummy Pane"));
+        return p;
+    }
 
-	public static void setApplication(Application application) {
-		Command.application = application;
-	}
+    protected Application getApplication() {
+        if (application == null) {
+            throw new IllegalStateException("Missing application ref. Must invoke Command.setApplication(...) before use.");
+        }
+        return application;
+    }
 
-	protected static Command loadCommand(String name) {
-		String clsName = Command.class.getPackage().getName() + "." + toTitleCase(name) + "Command";
-		try {
-			Class cls = Class.forName(clsName);
-			return (Command) cls.newInstance();
-		} catch (ClassNotFoundException e) {
-			return new DummyCommand(name);
-			//            throw new IllegalArgumentException("Command not defined: "+name);
-		} catch (InstantiationException e) {
-			throw new RuntimeException("Failed to create command " + name + ". ErrMsg=" + e);
-		} catch (IllegalAccessException e) {
-			throw new RuntimeException("Not permitted to create command " + name + ". ErrMsg=" + e);
-		}
-	}
+    public static void setApplication(Application application) {
+        Command.application = application;
+    }
 
-	private String extractName() {
-		return extractName(this.getClass());
-	}
+    protected static Command loadCommand(String name) {
+        String clsName = Command.class.getPackage().getName() + "." + toTitleCase(name) + "Command";
+        try {
+            Class cls = Class.forName(clsName);
+            return (Command) cls.newInstance();
+        } catch (ClassNotFoundException e) {
+            return new DummyCommand(name);
+            //            throw new IllegalArgumentException("Command not defined: "+name);
+        } catch (InstantiationException e) {
+            throw new RuntimeException("Failed to create command " + name + ". ErrMsg=" + e);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException("Not permitted to create command " + name + ". ErrMsg=" + e);
+        }
+    }
 
-	private static String extractName(Class cls) {
-		return extractName(cls.getSimpleName());
-	}
+    private String extractName() {
+        return extractName(this.getClass());
+    }
 
-	private static String extractName(String clsName) {
-		if (isBlank(clsName))
-			return "[NONE]";
-		return clsName.substring(0, clsName.lastIndexOf("Command")).toLowerCase();
-	}
+    private static String extractName(Class cls) {
+        return extractName(cls.getSimpleName());
+    }
 
-	private static String toTitleCase(String s) {
-		if (isBlank(s) || s.length() == 1)
-			return s;
-		return s.substring(0, 1).toUpperCase() + s.substring(1);
-	}
+    private static String extractName(String clsName) {
+        if (isBlank(clsName)) {
+            return "[NONE]";
+        }
+        return clsName.substring(0, clsName.lastIndexOf("Command")).toLowerCase();
+    }
 
-	private static boolean isBlank(String s) {
-		return s == null || s.trim().length() == 0;
-	}
+    private static String toTitleCase(String s) {
+        if (isBlank(s) || s.length() == 1) {
+            return s;
+        }
+        return s.substring(0, 1).toUpperCase() + s.substring(1);
+    }
 
-	protected String loadResource(String path) {
-		InputStream is = this.getClass().getResourceAsStream(path);
-		if (is == null) {
-			throw new RuntimeException("Failed to load text resource: " + path);
-		}
+    private static boolean isBlank(String s) {
+        return s == null || s.trim().length() == 0;
+    }
 
-		try {
-			StringBuilder buf = new StringBuilder(1000);
-			BufferedReader in = new BufferedReader(new InputStreamReader(is));
-			String line;
-			while ((line = in.readLine()) != null) {
-				buf.append(line);
-			}
-			in.close();
+    protected String loadResource(String path) {
+        InputStream is = this.getClass().getResourceAsStream(path);
+        if (is == null) {
+            throw new RuntimeException("Failed to load text resource: " + path);
+        }
 
-			return buf.toString();
-		} catch (Exception e) {
-			throw new RuntimeException("Failed to load text resource: " + path, e);
-		}
-	}
+        try {
+            StringBuilder buf = new StringBuilder(1000);
+            try (BufferedReader in = new BufferedReader(new InputStreamReader(is))) {
+                String line;
+                while ((line = in.readLine()) != null) {
+                    buf.append(line);
+                }
+            }
 
-	protected static class DummyCommand extends Command {
-		public DummyCommand(String name) {
-			super("dummy-" + name);
-			setLabel(name);
-		}
+            return buf.toString();
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to load text resource: " + path, e);
+        }
+    }
 
-		@Override
-		protected void doExecute(Application app) {
-			JOptionPane.showMessageDialog(null, "Command not yet implemented: " + getLabel(), "Undefined command", JOptionPane.WARNING_MESSAGE);
-		}
-	}
+    protected static class DummyCommand extends Command {
 
+        public DummyCommand(String name) {
+            super("dummy-" + name);
+            configure(name);
+        }
+
+        @Override
+        protected void doExecute(Application app) {
+            JOptionPane.showMessageDialog(null, "Command not yet implemented: " + getLabel(), "Undefined command", JOptionPane.WARNING_MESSAGE);
+        }
+
+        private void configure(String name) {
+            setLabel(name);
+        }
+    }
+
+    protected String getString(String keyLabel) {
+        return getApplication().getLanguage().getProperty(keyLabel);
+    }
+    
+    public static void resetComans() {
+        cmds = new HashMap<>();;
+    }
 }

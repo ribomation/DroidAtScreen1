@@ -9,7 +9,6 @@
  * You are free to use this software and the source code as you like.
  * We do appreciate if you attribute were it came from.
  */
-
 package com.ribomation.droidAtScreen;
 
 import java.util.List;
@@ -30,42 +29,45 @@ import com.ribomation.droidAtScreen.gui.DeviceTableModel;
  */
 public interface Application {
 
-	ApplicationFrame getAppFrame();
+    ApplicationFrame getAppFrame();
 
-	Settings getSettings();
+    Settings getSettings();
+    
+    Language getLanguage();
 
-	Info getInfo();
+    Info getInfo();
 
-	AndroidDeviceManager getDeviceManager();
+    AndroidDeviceManager getDeviceManager();
 
-	void addAndroidDeviceListener(AndroidDeviceListener listener);
+    void addAndroidDeviceListener(AndroidDeviceListener listener);
 
-	/**
-	 * Updates the position of the frames on the screen
-	 */
-	void updateDeviceFramePositionsOnScreen(DeviceFrame newFrame);
+    /**
+     * Updates the position of the frames on the screen
+     * @param newFrame
+     */
+    void updateDeviceFramePositionsOnScreen(DeviceFrame newFrame);
 
-	List<DeviceFrame> getDevices();
+    List<DeviceFrame> getDevices();
 
-	/**
-	 * Invoked when a new device is detected.
-	 *
-	 * @param dev
-	 *            the new device
-	 */
-	void connected(AndroidDevice dev);
+    /**
+     * Invoked when a new device is detected.
+     *
+     * @param dev the new device
+     */
+    void connected(AndroidDevice dev);
 
-	/**
-	 * Invoked when a device goes offline.
-	 *
-	 * @param dev
-	 *            the defunct device
-	 */
-	void disconnected(AndroidDevice dev);
+    /**
+     * Invoked when a device goes offline.
+     *
+     * @param dev the defunct device
+     */
+    void disconnected(AndroidDevice dev);
 
-	DeviceTableModel getDeviceTableModel();
+    DeviceTableModel getDeviceTableModel();
 
-	void disconnectAll();
+    void disconnectAll();
 
-	java.util.Timer getTimer();
+    java.util.Timer getTimer();
+    
+    void reloadGUI();
 }

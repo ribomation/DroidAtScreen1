@@ -9,7 +9,6 @@
  * You are free to use this software and the source code as you like.
  * We do appreciate if you attribute were it came from.
  */
-
 package com.ribomation.droidAtScreen.cmd;
 
 import java.io.File;
@@ -25,6 +24,7 @@ import com.ribomation.droidAtScreen.Application;
 import com.ribomation.droidAtScreen.Settings;
 import com.ribomation.droidAtScreen.dev.ScreenImage;
 import com.ribomation.droidAtScreen.gui.DeviceFrame;
+import java.io.IOException;
 
 /**
  * DESCRIPTION
@@ -32,89 +32,102 @@ import com.ribomation.droidAtScreen.gui.DeviceFrame;
  * User: Jens Created: 2012-03-23, 18:14
  */
 public class ScreenshotCommand extends CommandWithTarget<DeviceFrame> {
-	public ScreenshotCommand(DeviceFrame target) {
-		super(target);
-		setIcon("camera");
-		setTooltip("Takes a screen-shot and saves it to a file");
-	}
 
-	@Override
-	protected void doExecute(Application app, DeviceFrame device) {
-		ScreenImage image = device.getLastScreenshot().copy();
+    public ScreenshotCommand(DeviceFrame target) {
+        super(target);
+        configure();
+    }
 
-		if (app.getSettings().isAskBeforeScreenshot()) {
-			JFileChooser chooser = createChooser(app.getSettings().getImageDirectory(), suggestFilename(app), app.getSettings().getImageFormats());
-			if (chooser.showSaveDialog(app.getAppFrame()) == JFileChooser.APPROVE_OPTION) {
-				File file = chooser.getSelectedFile();
-				if (!file.exists() || askOverwrite(app, file)) {
-					SwingUtilities.invokeLater(new ImageSaver(app, file, image));
-				}
-			}
-		} else {
-			SwingUtilities.invokeLater(new ImageSaver(app, suggestFilename(app), image));
-		}
-	}
+    @Override
+    protected void doExecute(Application app, DeviceFrame device) {
+        ScreenImage image = device.getLastScreenshot().copy();
 
-	private class ImageSaver implements Runnable {
-		private Application app;
-		private File file;
-		private ScreenImage image;
+        if (app.getSettings().isAskBeforeScreenshot()) {
+            JFileChooser chooser = createChooser(app.getSettings().getImageDirectory(), suggestFilename(app), app.getSettings().getImageFormats());
+            if (chooser.showSaveDialog(app.getAppFrame()) == JFileChooser.APPROVE_OPTION) {
+                File file = chooser.getSelectedFile();
+                if (!file.exists() || askOverwrite(app, file)) {
+                    SwingUtilities.invokeLater(new ImageSaver(app, file, image));
+                }
+            }
+        } else {
+            SwingUtilities.invokeLater(new ImageSaver(app, suggestFilename(app), image));
+        }
+    }
 
-		private ImageSaver(Application app, File file, ScreenImage image) {
-			this.app = app;
-			this.file = file;
-			this.image = image;
-		}
+    private class ImageSaver implements Runnable {
 
-		@Override
-		public void run() {
-			try {
-				ImageIO.write(image.toBufferedImage(), extractFormat(app, file), file);
-				app.getAppFrame().getStatusBar().message("Written %s", file.getName());
-				getLog().info(String.format("Screenshot file: %s", file.getAbsolutePath()));
-			} catch (Exception e) {
-				JOptionPane.showMessageDialog(app.getAppFrame(), String.format("Failed to save '%s': %s", file, e.getMessage()), "Failure", JOptionPane.ERROR_MESSAGE);
-			}
-		}
-	}
+        private final Application app;
+        private final File file;
+        private final ScreenImage image;
 
-	@Override
-	protected void updateButton(DeviceFrame target) {
+        private ImageSaver(Application app, File file, ScreenImage image) {
+            this.app = app;
+            this.file = file;
+            this.image = image;
+        }
 
-	}
+        @Override
+        public void run() {
+            try {
+                ImageIO.write(image.toBufferedImage(), extractFormat(app, file), file);
+                app.getAppFrame().getStatusBar().message(
+                        getString("screenshot_message_loading"),
+                        file.getName());
+                getLog().info(String.format("Screenshot file: %s",
+                        file.getAbsolutePath()));
+            } catch (IOException e) {
+                JOptionPane.showMessageDialog(app.getAppFrame(),
+                        String.format(getString("screenshot_message_failed"),
+                                file, e.getMessage()), "Failure",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
 
-	private JFileChooser createChooser(File dir, File file, String[] exts) {
-		JFileChooser chooser = new JFileChooser();
-		chooser.setCurrentDirectory(dir);
-		chooser.setSelectedFile(file);
-		chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-		chooser.addChoosableFileFilter(new FileNameExtensionFilter("Image Files", exts));
-		return chooser;
-	}
+    @Override
+    protected void updateButton(DeviceFrame target) {
 
-	private File suggestFilename(Application app) {
-		Settings cfg = app.getSettings();
-		return new File(cfg.getImageDirectory(), String.format("%s-%d.%s", app.getInfo().getName().toLowerCase(), cfg.nextInt(), cfg.getImageFormat().toLowerCase()));
-	}
+    }
 
-	private boolean askOverwrite(Application app, File f) {
-		return JOptionPane.showConfirmDialog(app.getAppFrame(), String.format("File '%s' already exists. Do you want to overwrite it?", f), "Overwrite?", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION;
-	}
+    private JFileChooser createChooser(File dir, File file, String[] exts) {
+        JFileChooser chooser = new JFileChooser();
+        chooser.setCurrentDirectory(dir);
+        chooser.setSelectedFile(file);
+        chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        chooser.addChoosableFileFilter(new FileNameExtensionFilter("Image Files", exts));
+        return chooser;
+    }
 
-	private String extractExt(File f) {
-		String n = f.getName();
-		int dot = n.lastIndexOf('.');
-		if (dot > 0)
-			return n.substring(dot + 1);
-		return n;
-	}
+    private File suggestFilename(Application app) {
+        Settings cfg = app.getSettings();
+        return new File(cfg.getImageDirectory(), String.format("%s-%d.%s", app.getInfo().getName().toLowerCase(), cfg.nextInt(), cfg.getImageFormat().toLowerCase()));
+    }
 
-	private String extractFormat(Application app, File f) {
-		String[] formats = app.getSettings().getImageFormats();
-		String ext = extractExt(f).toUpperCase();
-		if (Arrays.asList(formats).contains(ext))
-			return ext;
-		throw new RuntimeException("Invalid extension: " + f);
-	}
+    private boolean askOverwrite(Application app, File f) {
+        return JOptionPane.showConfirmDialog(app.getAppFrame(), String.format("File '%s' already exists. Do you want to overwrite it?", f), "Overwrite?", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION;
+    }
 
+    private String extractExt(File f) {
+        String n = f.getName();
+        int dot = n.lastIndexOf('.');
+        if (dot > 0) {
+            return n.substring(dot + 1);
+        }
+        return n;
+    }
+
+    private String extractFormat(Application app, File f) {
+        String[] formats = app.getSettings().getImageFormats();
+        String ext = extractExt(f).toUpperCase();
+        if (Arrays.asList(formats).contains(ext)) {
+            return ext;
+        }
+        throw new RuntimeException(String.format(getString("invalid_extension"), f));
+    }
+
+    private void configure() {
+        setIcon("camera");
+        setTooltip(getString("screenshot_tooltip"));
+    }
 }

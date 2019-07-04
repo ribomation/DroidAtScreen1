@@ -8,17 +8,17 @@
     <groupId>com.ribomation</groupId>
     <artifactId>droidAtScreen</artifactId>
     <packaging>jar</packaging>
-    <version>1.2</version>
+    <version>1.4</version>
 
     <properties>
         <app.class>com.ribomation.droidAtScreen.DroidAtScreenApplication</app.class>
-        <compile.java.version>1.6</compile.java.version>
+        <compile.java.version>1.8</compile.java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.build.timestamp.format>yyyy-MM-dd</maven.build.timestamp.format>
         <timestamp>${maven.build.timestamp}</timestamp>
-    </properties>
-
+    </properties> 
+    
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
@@ -26,11 +26,11 @@
             <version>4.7</version>
             <scope>test</scope>
         </dependency>
-
+        
         <dependency>
-            <groupId>com.google.android.tools</groupId>
+            <groupId>com.android.tools.ddms</groupId>
             <artifactId>ddmlib</artifactId>
-            <version>r13</version>
+            <version>25.3.0</version>
         </dependency>
 
         <dependency>
@@ -38,7 +38,21 @@
             <artifactId>log4j</artifactId>
             <version>1.2.14</version>
         </dependency>
+        
+        <dependency>
+            <groupId>com.bulenkov</groupId>
+            <artifactId>darcula</artifactId>
+            <version>2018.2</version>
+        </dependency>
     </dependencies>
+    
+    <repositories>
+        <repository>
+        <id>spring-repo</id>
+        <name>Spring Repository</name>
+        <url>https://repo.spring.io/plugins-release/</url>
+    </repository>
+    </repositories>    
 
     <build>
         <resources>
@@ -72,7 +86,7 @@
                         <configuration>
                             <transformers>
                                 <transformer
-                                        implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <mainClass>${app.class}</mainClass>
                                 </transformer>
                             </transformers>
@@ -113,5 +127,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>

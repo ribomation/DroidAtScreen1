@@ -9,7 +9,6 @@
  * You are free to use this software and the source code as you like.
  * We do appreciate if you attribute were it came from.
  */
-
 package com.ribomation.droidAtScreen;
 
 import java.awt.Dimension;
@@ -46,280 +45,293 @@ import com.ribomation.droidAtScreen.gui.DeviceTableModel;
  * @date 2010-jan-17 11:00:39
  */
 public class DroidAtScreenApplication implements Application, AndroidDeviceListener {
-	private final Logger log = Logger.getLogger(DroidAtScreenApplication.class);
-	private AndroidDeviceManager deviceManager;
-	private ApplicationFrame appFrame;
-	private final List<AndroidDeviceListener> deviceListeners = new ArrayList<AndroidDeviceListener>();
-	private Settings settings;
-	private Properties appProperties;
-	private final DeviceTableModel deviceTableModel = new DeviceTableModel();
-	private Timer timer;
 
-	public static void main(String[] args) {
-		DroidAtScreenApplication app = new DroidAtScreenApplication();
-		app.parseArgs(args);
-		app.initProperties();
-		app.initCommands();
-		app.initGUI();
-		app.initAndroid();
-		app.run();
-		app.postStart();
-	}
+    private final Logger log = Logger.getLogger(DroidAtScreenApplication.class);
+    private AndroidDeviceManager deviceManager;
+    private ApplicationFrame appFrame;
+    private final List<AndroidDeviceListener> deviceListeners = new ArrayList<>();
+    private Settings settings;
+    private Language language;
+    private Properties appProperties;
+    private DeviceTableModel deviceTableModel = new DeviceTableModel();
+    private Timer timer;
 
-	private void parseArgs(String[] args) {
-		log.debug("parseArgs: " + Arrays.toString(args));
-	}
+    public static void main(String[] args) {
+        DroidAtScreenApplication app = new DroidAtScreenApplication();
+        app.parseArgs(args);
+        app.initProperties();
+        app.initCommands();
+        app.initGUI();
+        app.initAndroid();
+        app.run();
+        app.postStart();
+    }
 
-	private void initProperties() {
-		log.debug("initProperties");
-		InputStream is = this.getClass().getResourceAsStream("/app.properties");
-		if (is != null) {
-			try {
-				appProperties = new Properties();
-				appProperties.load(is);
-			} catch (IOException e) {
-				log.debug("Missing classpath resource: /app.properties", e);
-			}
-		}
+    private void parseArgs(String[] args) {
+        log.debug("parseArgs: " + Arrays.toString(args));
+    }
 
-		settings = new Settings();
-		settings.dump();
-	}
+    private void initProperties() {
+        log.debug("initProperties");
+        InputStream is = this.getClass().getResourceAsStream("/app.properties");
+        if (is != null) {
+            try {
+                appProperties = new Properties();
+                appProperties.load(is);
+            } catch (IOException e) {
+                log.debug("Missing classpath resource: /app.properties", e);
+            }
+        }
 
-	private void initCommands() {
-		log.debug("initCommands");
-		Command.setApplication(this);
-	}
+        settings = new Settings();
+        settings.dump();
 
-	private void initAndroid() {
-		log.debug("initAndroid");
-		deviceManager = new AndroidDeviceManager(this);
-		deviceManager.initManager();
-		timer = new Timer("Screenshot Retrievers");
-	}
+        language = new Language(settings.getLanguage());
+    }
 
-	private void initGUI() {
-		log.debug("initGUI");
-		appFrame = new ApplicationFrame(this);
-		appFrame.initGUI();
-	}
+    private void initCommands() {
+        log.debug("initCommands");
+        Command.setApplication(this);
+    }
 
-	private void run() {
-		log.debug("run");
-		getAppFrame().setVisible(true);
-	}
+    private void initAndroid() {
+        log.debug("initAndroid");
+        deviceManager = new AndroidDeviceManager(this);
+        deviceManager.initManager();
+        timer = new Timer("Screenshot Retrievers");
+    }
 
-	private void postStart() {
-		log.debug("postStart");
+    private void initGUI() {
+        log.debug("initGUI");
+        appFrame = new ApplicationFrame(this);
+        appFrame.initGUI();
+    }
 
-		File adbExePath = getSettings().getAdbExecutable();
-		if (adbExePath == null) {
-			adbExePath = isExe("ANDROID_HOME");
-		}
-		if (adbExePath == null) {
-			adbExePath = isExe("ANDROID_SDK_HOME");
-		}
-		if (adbExePath == null) {
-			Command.find(AdbExePathCommand.class).execute();
-		} else {
-			getSettings().setAdbExecutable(adbExePath);
-			getDeviceManager().setAdbExecutable(adbExePath);
-			getDeviceManager().createBridge();
-		}
-	}
+    private void run() {
+        log.debug("run");
+        getAppFrame().setVisible(true);
+    }
 
-	private File isExe(String envName) {
-		String env = System.getenv(envName);
-		log.debug("isExe: env=" + env);
-		if (env == null) {
-			return null;
-		}
+    private void postStart() {
+        log.debug("postStart");
 
-		String ext = System.getProperty("os.name", "").toLowerCase().startsWith("windows") ? ".exe" : "";
-		File androidHome = new File(env);
-		File platformTools = new File(androidHome, "platform-tools");
-		File file = new File(platformTools, "adb" + ext);
-		log.debug("isExe: file=" + file.getAbsolutePath());
+        File adbExePath = getSettings().getAdbExecutable();
+        if (adbExePath == null) {
+            adbExePath = isExe("ANDROID_HOME");
+        }
+        if (adbExePath == null) {
+            adbExePath = isExe("ANDROID_SDK_HOME");
+        }
+        if (adbExePath == null) {
+            Command.find(AdbExePathCommand.class).execute();
+        } else {
+            getSettings().setAdbExecutable(adbExePath);
+            getDeviceManager().setAdbExecutable(adbExePath);
+            getDeviceManager().createBridge();
+        }
+    }
 
-		if (file.isFile() && file.canExecute()) {
-			return file;
-		}
-		return null;
-	}
+    @Override
+    public void reloadGUI() {
+        log.debug("reloadGUI");
+        initProperties();
+        initCommands();
+        Command.resetComans();
+        appFrame.dispose();
+        deviceTableModel = new DeviceTableModel();
+        appFrame = new ApplicationFrame(this);
+        appFrame.initGUI();
+        run();
+    }
 
-	@Override
-	public void updateDeviceFramePositionsOnScreen(DeviceFrame newFrame) {
-		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
-		synchronized (deviceTableModel) {
-			List<DeviceFrame> devices = deviceTableModel.getDevices();
-			int count = devices.size();
-			if (count > 0) {
-				// divide the screen for each frame
-				int width = (int) (screen.getWidth() / count);
-				int height = (int) screen.getHeight();
-				int offset = 0;
-				for (DeviceFrame frame : devices) {
-					if (frame.equals(newFrame)) {
-						centerFrameLocationOnScreenRegion(frame, width * count, height, 0, false);
-					}
-					// center each frame within their screen region
-					centerFrameLocationOnScreenRegion(frame, width, height, offset, true);
-					offset++;
-				}
-			}
-		}
-	}
+    private File isExe(String envName) {
+        String env = System.getenv(envName);
+        log.debug("isExe: env=" + env);
+        if (env == null) {
+            return null;
+        }
 
-	private void centerFrameLocationOnScreenRegion(DeviceFrame frame, int screenWidth, int screenHeight, int offset, boolean animate) {
-		int x = (screenWidth - frame.getWidth()) / 2;
-		int y = (screenHeight - frame.getHeight()) / 2;
-		frame.setLocation(x + screenWidth * offset, y, animate);
-	}
+        String ext = System.getProperty("os.name", "").toLowerCase().startsWith("windows") ? ".exe" : "";
+        File androidHome = new File(env);
+        File platformTools = new File(androidHome, "platform-tools");
+        File file = new File(platformTools, "adb" + ext);
+        log.debug("isExe: file=" + file.getAbsolutePath());
 
-	// --------------------------------------------
-	// App getters
-	// --------------------------------------------
+        if (file.isFile() && file.canExecute()) {
+            return file;
+        }
+        return null;
+    }
 
-	@Override
-	public List<DeviceFrame> getDevices() {
-		return getDeviceTableModel().getDevices();
-	}
+    @Override
+    public void updateDeviceFramePositionsOnScreen(DeviceFrame newFrame) {
+        Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
+        synchronized (deviceTableModel) {
+            List<DeviceFrame> devices = deviceTableModel.getDevices();
+            int count = devices.size();
+            if (count > 0) {
+                // divide the screen for each frame
+                int width = (int) (screen.getWidth() / count);
+                int height = (int) screen.getHeight();
+                int offset = 0;
+                for (DeviceFrame frame : devices) {
+                    if (frame.equals(newFrame)) {
+                        centerFrameLocationOnScreenRegion(frame, width * count, height, 0, false);
+                    }
+                    // center each frame within their screen region
+                    centerFrameLocationOnScreenRegion(frame, width, height, offset, true);
+                    offset++;
+                }
+            }
+        }
+    }
 
-	@Override
-	public AndroidDeviceManager getDeviceManager() {
-		return deviceManager;
-	}
+    private void centerFrameLocationOnScreenRegion(DeviceFrame frame, int screenWidth, int screenHeight, int offset, boolean animate) {
+        int x = (screenWidth - frame.getWidth()) / 2;
+        int y = (screenHeight - frame.getHeight()) / 2;
+        frame.setLocation(x + screenWidth * offset, y, animate);
+    }
 
-	@Override
-	public ApplicationFrame getAppFrame() {
-		return appFrame;
-	}
+    // --------------------------------------------
+    // App getters
+    // --------------------------------------------
+    @Override
+    public List<DeviceFrame> getDevices() {
+        return getDeviceTableModel().getDevices();
+    }
 
-	@Override
-	public Settings getSettings() {
-		return settings;
-	}
+    @Override
+    public AndroidDeviceManager getDeviceManager() {
+        return deviceManager;
+    }
 
-	@Override
-	public Info getInfo() {
-		return new Info() {
-			@Override
-			public String getName() {
-				return appProperties.getProperty("app.name", "no-name");
-			}
+    @Override
+    public ApplicationFrame getAppFrame() {
+        return appFrame;
+    }
 
-			@Override
-			public String getVersion() {
-				return appProperties.getProperty("app.version", "0.0");
-			}
+    @Override
+    public Settings getSettings() {
+        return settings;
+    }
 
-			@Override
-			public String getAppUri() {
-				return appProperties.getProperty("app.uri", "");
-			}
+    @Override
+    public Info getInfo() {
+        return new Info() {
+            @Override
+            public String getName() {
+                return appProperties.getProperty("app.name", "no-name");
+            }
 
-			@Override
-			public String getHelpUri() {
-				return appProperties.getProperty("help.uri", "");
-			}
+            @Override
+            public String getVersion() {
+                return appProperties.getProperty("app.version", "0.0");
+            }
 
-			@Override
-			public String getMailUri() {
-				return appProperties.getProperty("mail.uri", "");
-			}
+            @Override
+            public String getAppUri() {
+                return appProperties.getProperty("app.uri", "");
+            }
 
-			@Override
-			public Date getBuildDate() {
-				try {
-					return new SimpleDateFormat("yyyy-MM-dd").parse(appProperties.getProperty("build.date", "2011-01-01"));
-				} catch (ParseException e) {
-					return new Date();
-				}
-			}
-		};
-	}
+            @Override
+            public String getHelpUri() {
+                return appProperties.getProperty("help.uri", "");
+            }
 
-	@Override
-	public DeviceTableModel getDeviceTableModel() {
-		return deviceTableModel;
-	}
+            @Override
+            public String getMailUri() {
+                return appProperties.getProperty("mail.uri", "");
+            }
 
-	@Override
-	public Timer getTimer() {
-		return timer;
-	}
+            @Override
+            public Date getBuildDate() {
+                try {
+                    return new SimpleDateFormat("yyyy-MM-dd").parse(appProperties.getProperty("build.date", "2011-01-01"));
+                } catch (ParseException e) {
+                    return new Date();
+                }
+            }
+        };
+    }
 
-	// --------------------------------------------
-	// AndroidDeviceManager
-	// --------------------------------------------
+    @Override
+    public DeviceTableModel getDeviceTableModel() {
+        return deviceTableModel;
+    }
 
-	@Override
-	public void connected(final AndroidDevice dev) {
-		log.debug("connected: dev=" + dev);
+    @Override
+    public Timer getTimer() {
+        return timer;
+    }
 
-		SwingUtilities.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				getAppFrame().getStatusBar().message("Connected to " + dev.getName());
+    // --------------------------------------------
+    // AndroidDeviceManager
+    // --------------------------------------------
+    @Override
+    public void connected(final AndroidDevice dev) {
+        log.debug("connected: dev=" + dev);
 
-				DeviceFrame frame = new DeviceFrame(DroidAtScreenApplication.this, dev);
-				deviceTableModel.add(frame);
-				fireDeviceConnected(dev);
+        SwingUtilities.invokeLater(() -> {
+            getAppFrame().getStatusBar().message("Connected to " + dev.getName());
 
-				frame.setVisible(!getSettings().isHideEmulators() || !dev.isEmulator());
+            DeviceFrame frame = new DeviceFrame(DroidAtScreenApplication.this, dev);
+            deviceTableModel.add(frame);
+            fireDeviceConnected(dev);
 
-				updateDeviceFramePositionsOnScreen(frame);
-			}
-		});
-	}
+            frame.setVisible(!getSettings().isHideEmulators() || !dev.isEmulator());
 
-	@Override
-	public void disconnected(final AndroidDevice dev) {
-		log.debug("disconnected: dev=" + dev);
+            updateDeviceFramePositionsOnScreen(frame);
+        });
+    }
 
-		SwingUtilities.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				getAppFrame().getStatusBar().message("Disconnected from " + dev.getName());
+    @Override
+    public void disconnected(final AndroidDevice dev) {
+        log.debug("disconnected: dev=" + dev);
 
-				DeviceFrame frame = deviceTableModel.getDevice(dev.getName());
-				if (frame == null) {
-					return;
-				}
+        SwingUtilities.invokeLater(() -> {
+            getAppFrame().getStatusBar().message("Disconnected from " + dev.getName());
 
-				deviceTableModel.remove(frame);
-				fireDeviceDisconnected(dev);
-				frame.stopRetriever();
-				frame.setVisible(false);
-				frame.dispose();
+            DeviceFrame frame = deviceTableModel.getDevice(dev.getName());
+            if (frame == null) {
+                return;
+            }
 
-				updateDeviceFramePositionsOnScreen(null);
-			}
-		});
-	}
+            deviceTableModel.remove(frame);
+            fireDeviceDisconnected(dev);
+            frame.stopRetriever();
+            frame.setVisible(false);
+            frame.dispose();
 
-	@Override
-	public void disconnectAll() {
-		for (DeviceFrame frame : new ArrayList<DeviceFrame>(deviceTableModel.getDevices())) {
-			disconnected(frame.getDevice());
-		}
-	}
+            updateDeviceFramePositionsOnScreen(null);
+        });
+    }
 
-	@Override
-	public void addAndroidDeviceListener(AndroidDeviceListener listener) {
-		deviceListeners.add(listener);
-	}
+    @Override
+    public void disconnectAll() {
+        new ArrayList<>(deviceTableModel.getDevices()).forEach((frame) -> {
+            disconnected(frame.getDevice());
+        });
+    }
 
-	public void fireDeviceConnected(AndroidDevice dev) {
-		for (AndroidDeviceListener listener : deviceListeners) {
-			listener.connected(dev);
-		}
-	}
+    @Override
+    public void addAndroidDeviceListener(AndroidDeviceListener listener) {
+        deviceListeners.add(listener);
+    }
 
-	public void fireDeviceDisconnected(AndroidDevice dev) {
-		for (AndroidDeviceListener listener : deviceListeners) {
-			listener.disconnected(dev);
-		}
-	}
+    public void fireDeviceConnected(AndroidDevice dev) {
+        deviceListeners.forEach((listener) -> {
+            listener.connected(dev);
+        });
+    }
 
+    public void fireDeviceDisconnected(AndroidDevice dev) {
+        deviceListeners.forEach((listener) -> {
+            listener.disconnected(dev);
+        });
+    }
+
+    @Override
+    public Language getLanguage() {
+        return language;
+    }
 }

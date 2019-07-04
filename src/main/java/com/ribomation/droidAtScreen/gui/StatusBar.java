@@ -9,7 +9,6 @@
  * You are free to use this software and the source code as you like.
  * We do appreciate if you attribute were it came from.
  */
-
 package com.ribomation.droidAtScreen.gui;
 
 import java.awt.Color;
@@ -25,36 +24,39 @@ import com.ribomation.droidAtScreen.Application;
 
 /**
  * Place for status messages.
- * 
+ *
  * @user jens
  * @date 2011-10-02 11:17
  */
-public class StatusBar extends JPanel {
-	private JLabel message;
+public final class StatusBar extends JPanel {
 
-	public StatusBar(Application app) {
-		setLayout(new FlowLayout(FlowLayout.LEFT));
-		setBorder(BorderFactory.createLoweredBevelBorder());
+    private final JLabel message;
 
-		message = new JLabel("", SwingConstants.LEFT);
-		Font font = message.getFont();
-		message.setFont(font.deriveFont(Font.PLAIN, (float) (font.getSize() * 0.90)));
-		message.setForeground(Color.DARK_GRAY);
-		add(message);
+    public StatusBar(Application app) {
+        configure();
+        message = new JLabel("", SwingConstants.LEFT);
+        Font font = message.getFont();
+        message.setFont(font.deriveFont(Font.PLAIN, (float) (font.getSize() * 0.90)));
+        message.setForeground(Color.DARK_GRAY);
+        add(message);
 
-		message(app.getInfo().getName() + ", V" + app.getInfo().getVersion());
-	}
+        setMessage(app.getInfo().getName() + ", V" + app.getInfo().getVersion());
+    }
 
-	public void message(String txt) {
-		message.setText(txt);
-	}
+    public void setMessage(String txt) {
+        message.setText(txt);
+    }
 
-	public void message(String fmt, Object... args) {
-		message(String.format(fmt, args));
-	}
+    public void message(String fmt, Object... args) {
+        setMessage(String.format(fmt, args));
+    }
 
-	public void clear() {
-		message("");
-	}
+    public void clear() {
+        setMessage("");
+    }
 
+    private void configure() {
+        setLayout(new FlowLayout(FlowLayout.LEFT));
+        setBorder(BorderFactory.createLoweredBevelBorder());
+    }
 }
