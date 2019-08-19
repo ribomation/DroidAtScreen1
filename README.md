@@ -3,6 +3,11 @@
 Droid@Screen is a stand-alone Java program that show the device screen of an Android phone
 at a computer. It's typically used for demo and training.
 
+---------
+<div style="background-color:red; color:white; border:2px solid #333;">This project is retired.</div>
+
+---------
+
 ## Prerequisites ##
 
 * Java 8
