@@ -5,7 +5,7 @@ at a computer. It's typically used for demo and training.
 
 ---------
 
-__ This project is retired __
+## This project is retired
 
 ---------
 
