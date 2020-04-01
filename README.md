@@ -38,7 +38,7 @@ Plug-in your Android device using the USB cable and a device frame will shortly 
  * Press left button, drag the mouse, release left button - swipe from point where mouse button was hold to point where it is released
 
 ### KeyBoard ###
- Keyboard supports anly ASCII characters, only Enaglish can be used to send text to device.
+ Keyboard supports anly ASCII characters, only English can be used to send text to device.
 
  * Input any English text
  * Ctrl + V - send to device text that is being copied on computer
